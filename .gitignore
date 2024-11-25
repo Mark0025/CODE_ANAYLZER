@@ -1,0 +1,10 @@
+.env
+.env.*
+!.env.example
+crews/crew-output/
+**/*.log
+**/__pycache__/
+*.pyc
+.DS_Store
+.venv/
+code-analyzer-env/

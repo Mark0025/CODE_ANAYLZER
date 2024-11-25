@@ -1,0 +1,53 @@
+# Code Analysis Project Rules
+
+# 1. **Package Management**
+- Use UV for all dependency management
+- Use pyproject.toml as single source of truth
+- No requirements.txt files
+- No pip install commands
+
+# 2. **OpenAI Integration**
+- Use `from openai import OpenAI`
+- No langchain_openai imports
+- No ChatOpenAI usage
+- Always use latest OpenAI API patterns (>=1.0.0)
+
+# 3. **CrewAI Usage**
+- Use CrewAI version >=0.80.0
+- Direct imports: `from crewai import Agent, Task, Crew`
+- No deprecated agent patterns
+- Always include `expected_output` in Tasks
+
+# 4. **Project Structure**
+- Keep code analysis tools in root directory
+- Store analysis outputs in crews/crew-output/
+- Use proper type hints
+- Follow Path objects for file handling
+
+# 5. **Environment Management**
+- Use .venv for virtual environments
+- Load environment variables with python-dotenv
+- Keep sensitive data in .env (never commit)
+- Use .env.example for templates
+
+# 6. **Code Standards**
+- Use Black for formatting
+- Include proper type hints
+- Use loguru for logging
+- Follow modern Python patterns (3.12+)
+
+# 7. **Dependencies**
+Required packages with minimum versions:
+- crewai>=0.80.0
+- openai>=1.3.0
+- python-dotenv>=1.0.0
+- loguru>=0.7.2
+- pydantic>=2.5.2
+- black>=23.11.0
+- tomli>=2.0.1
+
+# 8. **Forbidden Patterns**
+- No deprecated OpenAI patterns
+- No requirements.txt usage
+- No direct pip commands
+- No mixing of package managers 
