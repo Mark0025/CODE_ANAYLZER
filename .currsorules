@@ -1,53 +1,235 @@
-# Code Analysis Project Rules
+# Disable all markdown processing
+disable_markdown: true
 
-# 1. **Package Management**
-- Use UV for all dependency management
-- Use pyproject.toml as single source of truth
-- No requirements.txt files
-- No pip install commands
+# File patterns to completely ignore
+ignore:
+  - "*.md"
+  - "*.markdown"
+  - "*.MD"
+  - "README*"
+  - "PUBLISHING*"
+  - "LICENSE*"
+  - "*.toml"
+  - "*.yaml"
+  - "*.yml"
+  - "docs/*"
+  - ".github/*"
 
-# 2. **OpenAI Integration**
-- Use `from openai import OpenAI`
-- No langchain_openai imports
-- No ChatOpenAI usage
-- Always use latest OpenAI API patterns (>=1.0.0)
+# Directory patterns to ignore
+ignore_dirs:
+  - ".git"
+  - "__pycache__"
+  - "*.egg-info"
+  - "dist"
+  - "build"
+  - "docs"
 
-# 3. **CrewAI Usage**
-- Use CrewAI version >=0.80.0
-- Direct imports: `from crewai import Agent, Task, Crew`
-- No deprecated agent patterns
-- Always include `expected_output` in Tasks
+# Language settings
+python:
+  enabled: true
+  lint: true
+  format: true
+  typing:
+    required: true
+    strict: true
+  docstrings:
+    required: true
+    style: "pep257"
+  test:
+    framework: "pytest"
+    plugins:
+      - "pytest-mock"
+      - "pytest-cov"
+      - "pytest-asyncio"
+    fixtures:
+      - "CaptureFixture"
+      - "FixtureRequest"
+      - "LogCaptureFixture"
+      - "MonkeyPatch"
+      - "MockerFixture"
+  dependencies:
+    manager: "uv"
+    virtual_env: true
+  style:
+    formatter: "ruff"
+    line_length: 88
+    import_order: true
+  problem_solving:
+    pattern: "Think smart about errors:"
+    checklist:
+    order-of-thought:"""
+     0 - "Will fixing one fix many?"
+     1 - "Is there a root cause?"
+     2 - "Is there a common pattern?"
+     3 - "What Python libraries could help?"
+"""
+# Testing requirements
+test_requirements:
+  - location: "./tests"
+  - init_files: true
+  - typing: true
+  - docstrings: true
+  - framework: "pytest"
+  - annotations: true
 
-# 4. **Project Structure**
-- Keep code analysis tools in root directory
-- Store analysis outputs in crews/crew-output/
-- Use proper type hints
-- Follow Path objects for file handling
+# CI/CD settings
+ci_cd:
+  provider: "github-actions"
+  checks:
+    - typing
+    - lint
+    - test
+    - coverage
 
-# 5. **Environment Management**
-- Use .venv for virtual environments
-- Load environment variables with python-dotenv
-- Keep sensitive data in .env (never commit)
-- Use .env.example for templates
+# AI Development settings
+ai_development:
+  docstring_format: "google"
+  type_annotations: true
+  error_handling: true
+  logging: true
+  modular_design: true
+  configuration: "env_vars"
 
-# 6. **Code Standards**
-- Use Black for formatting
-- Include proper type hints
-- Use loguru for logging
-- Follow modern Python patterns (3.12+)
+# Global settings
+spell_check: false
 
-# 7. **Dependencies**
-Required packages with minimum versions:
-- crewai>=0.80.0
-- openai>=1.3.0
-- python-dotenv>=1.0.0
-- loguru>=0.7.2
-- pydantic>=2.5.2
-- black>=23.11.0
-- tomli>=2.0.1
+# Problem solving strategy
+problem_solving_strategy:
+  steps:
+    - identify_patterns:
+        description: "Look for common patterns in errors"
+        question: "Is there a recurring theme in these errors?"
+    
+    - library_solutions:
+        description: "Check for existing library solutions"
+        question: "Is there a Python/framework library that solves this?"
+    
+    - root_cause:
+        description: "Find the root cause"
+        question: "Can fixing one issue solve multiple problems?"
+    
+    - solution_impact:
+        description: "Evaluate solution impact"
+        question: "How will this solution affect other parts of the code?"
+    
+    - check_hardcoded_values:
+        description: "Always check for hardcoded values first"
+        questions:
+          - "Are there any hardcoded values like 'test-key'?"
+          - "Is this a placeholder someone added?"
+          - "Could this be overriding environment variables?"
+        rules:
+          - "Never use placeholder values in code"
+          - "Use empty strings or None as defaults"
+          - "Use comments for developer guidance"
+        examples:
+          bad: |
+            api_key = "test-key"  # Bad: Hardcoded placeholder
+          good: |
+            api_key = ""  # Good: Empty default
+            # Developer: Set OPENAI_API_KEY in .env file
+            
+    - simplest_solution_first:
+        description: "Look for the simplest fix first"
+        questions:
+          - "Could this be a simple hardcoded value?"
+          - "Are we overcomplicating the solution?"
+          - "What's the fastest way to verify?"
+        rules:
+          - "Search for hardcoded values before adding complexity"
+          - "Fix at source rather than adding layers"
+          - "Use grep/search before creating new systems"
 
-# 8. **Forbidden Patterns**
-- No deprecated OpenAI patterns
-- No requirements.txt usage
-- No direct pip commands
-- No mixing of package managers 
+# AI First Strategy
+ai_first_strategy:
+  principles:
+    - leverage_ai_strengths:
+        description: "Use AI's natural capabilities first"
+        questions:
+          - "Can AI handle this natively?"
+          - "Are we overcomplicating what AI does well?"
+          - "Are we reinventing AI functionality?"
+    
+    - simplify_before_building:
+        description: "Remove unnecessary complexity"
+        questions:
+          - "Are we building something AI already does?"
+          - "Can we remove layers between AI and task?"
+          - "Is our code getting in AI's way?"
+    
+    - focus_on_integration:
+        description: "Focus on connecting, not recreating"
+        questions:
+          - "How can we best connect to AI capabilities?"
+          - "What's the minimal code needed?"
+          - "Are we adding value or just layers?"
+
+    - measure_complexity:
+        description: "Evaluate solution complexity"
+        metrics:
+          - "Lines of our code vs AI utilization"
+          - "Number of potential failure points"
+          - "Maintenance burden"
+
+# Problem Solving Workflow
+problem_solving_workflow:
+  steps:
+    1. identify_ai_capabilities:
+        question: "What can AI already do here?"
+        example: "CrewAI can analyze code without our file walking"
+    
+    2. remove_unnecessary_code:
+        question: "What code can we remove?"
+        example: "Remove manual file analysis, trust CrewAI"
+    
+    3. enhance_ai_integration:
+        question: "How can we better integrate with AI?"
+        example: "Use CrewAI's native code understanding"
+    
+    4. validate_simplification:
+        question: "Is this simpler than before?"
+        metrics:
+          - Code reduction
+          - Fewer error cases
+          - Better AI utilization
+
+# Add to existing .currsorules, DO NOT REMOVE ANY EXISTING CONTENT
+
+# Content modification rules
+content_modification:
+  rules:
+    - never_remove_existing:
+        enabled: true
+        description: "Never remove existing content, only add new content"
+        policy: "append_only"
+    
+    - no_placeholders:
+        enabled: true
+        description: "Never use placeholder values in code"
+        forbidden_patterns:
+          - "test-key"
+          - "your-key-here"
+          - "placeholder"
+          - "xxx-xxx"
+        alternatives:
+          - "Use empty string ''"
+          - "Use None"
+          - "Use descriptive comments"
+    
+    - sensitive_data:
+        enabled: true
+        description: "Handle sensitive data appropriately"
+        rules:
+          - "Keep existing API keys and tokens as is"
+          - "Do not replace with placeholders"
+          - "Add warnings about security when relevant"
+          - "Use .env.example for new installations only"
+
+# Update strategy
+update_strategy:
+  method: "append_only"
+  rules:
+    - "Always add to end of sections"
+    - "Never modify existing rules"
+    - "Keep all historical rules"
+    - "Only append new configurations"
