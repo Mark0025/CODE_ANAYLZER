@@ -1,0 +1,43 @@
+CODE_ANALYZER/
+├── .env                        # Environment variables (API keys)
+├── .gitignore                 # Git ignore patterns
+├── LICENSE                    # Project license
+├── PUBLISHING.md             # Publishing guidelines
+├── README.md                 # Project documentation
+├── TEST.md                   # Testing documentation
+├── pyproject.toml            # Project dependencies and config
+│
+├── configs/                  # Configuration files
+│   └── ai_models.json       # AI model configurations
+│
+├── crews/                    # Crew implementations
+│   ├── __init__.py
+│   ├── base_crew.py         # Base crew class with API handling
+│   ├── code_analysis_crew.py # Code analysis implementation
+│   ├── analyze_crews_crew.py # Meta-analysis crew
+│   └── handlers/            # Shared handlers
+│       ├── __init__.py
+│       ├── rate_limit.py    # Rate limiting
+│       └── analysis_queue.py # Analysis queue
+│
+├── scripts/                  # Utility scripts
+│   ├── debug.sh             # Debug search tool
+│   ├── refresh.sh           # Environment refresh
+│   └── test.sh             # Test runner
+│
+├── tests/                    # Test suite
+│   ├── __init__.py
+│   ├── conftest.py          # Test configuration
+│   ├── test_analyzer.py     # Analyzer tests
+│   ├── test_crews.py        # Crew tests
+│   ├── test_environment.py  # Environment tests
+│   └── test_real_analysis.py # Real codebase tests
+│
+├── DEV-MAN-CREW/            # Development management
+│   ├── GOALS.md             # Project goals
+│   ├── REPORT.md            # Progress reports
+│   ├── TODO.md              # Task tracking
+│   └── litellm.AuthenticationError.md  # API key handling docs
+│
+└── backup-litellm/          # Backup of litellm implementation
+    └── crews/               # For future reference 
