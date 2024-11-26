@@ -1,0 +1,3 @@
+# Local project aliases
+alias test='/Users/markcarpenter/Desktop/projects/CODE_ANALYZER/scripts/bin/test'
+alias start='/Users/markcarpenter/Desktop/projects/CODE_ANALYZER/start.sh'

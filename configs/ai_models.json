@@ -1,0 +1,74 @@
+{
+  "model_tiers": {
+    "fast": {
+      "providers": [
+        {
+          "name": "openai",
+          "model": "gpt-3.5-turbo",
+          "rate_limit": 3500,
+          "rate_limit_unit": "tokens_per_minute",
+          "cost": 0.002,
+          "cost_unit": "per_1k_tokens",
+          "latency": "low",
+          "best_for": ["syntax", "basic_analysis", "quick_scan"]
+        },
+        {
+          "name": "anthropic",
+          "model": "claude-instant",
+          "rate_limit": 4000,
+          "rate_limit_unit": "tokens_per_minute",
+          "cost": 0.0008,
+          "cost_unit": "per_1k_tokens",
+          "latency": "low",
+          "best_for": ["documentation", "simple_refactoring"]
+        }
+      ]
+    },
+    "balanced": {
+      "providers": [
+        {
+          "name": "openai",
+          "model": "gpt-4",
+          "rate_limit": 200,
+          "rate_limit_unit": "tokens_per_minute",
+          "cost": 0.03,
+          "cost_unit": "per_1k_tokens",
+          "latency": "medium",
+          "best_for": ["complex_analysis", "architecture", "security"]
+        }
+      ]
+    },
+    "depth": {
+      "providers": [
+        {
+          "name": "openai",
+          "model": "gpt-4",
+          "rate_limit": 150,
+          "rate_limit_unit": "tokens_per_minute",
+          "cost": 0.03,
+          "cost_unit": "per_1k_tokens",
+          "latency": "high",
+          "best_for": ["complex_analysis", "architecture"]
+        }
+      ]
+    }
+  },
+  "analysis_phases": {
+    "initial_scan": {
+      "description": "Quick syntax and structure analysis",
+      "preferred_tier": "fast",
+      "fallback_tier": "balanced",
+      "rate_limit_strategy": "queue",
+      "batch_size": 50,
+      "concurrent_requests": 3
+    }
+  },
+  "rate_limit_strategies": {
+    "queue": {
+      "description": "Queue requests and process in batches",
+      "retry_delay": 60,
+      "max_retries": 3,
+      "batch_timeout": 300
+    }
+  }
+} 
