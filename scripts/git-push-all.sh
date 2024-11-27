@@ -6,6 +6,10 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m'
 
+# Get project root directory
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$PROJECT_ROOT"
+
 echo -e "${YELLOW}🚀 Pushing all code to GitHub...${NC}"
 
 # Function to check for sensitive files
