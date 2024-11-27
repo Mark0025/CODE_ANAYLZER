@@ -1,31 +1,47 @@
-# Environment and secrets
-.env
-.env.example
-.env.*
-
 # Python
 __pycache__/
 *.py[cod]
-*.class
 *.so
 .Python
+build/
+develop-eggs/
+dist/
 *.egg-info/
-.coverage
 
 # Virtual Environment
 .venv/
 venv/
-ENV/
+
+# Environment files
+.env
+.env.*
+!.env.example.template
 
 # IDE
 .vscode/
 .idea/
 
-# Logs and outputs
-crews/crew-output/
-logs/
-*.log
+# Testing
+.coverage
+.pytest_cache/
+htmlcov/
 
-# Temp files
+# Logs and outputs
+*.log
+crews/crew-output/
+
+# OS
 .DS_Store
 *.swp
+
+# Strict environment file rules
+.env
+.env.*
+!.env.example.template
+
+# Never commit these
+*.key
+*.pem
+*secret*
+*token*
+

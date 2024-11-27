@@ -193,7 +193,7 @@ problem_solving_workflow:
           - Fewer error cases
           - Better AI utilization
 
-# Add to existing .currsorules, DO NOT REMOVE ANY EXISTING CONTENT
+# Add to existing .currsorules
 
 # Content modification rules
 content_modification:
@@ -233,3 +233,62 @@ update_strategy:
     - "Never modify existing rules"
     - "Keep all historical rules"
     - "Only append new configurations"
+
+# Add to existing .currsorules
+
+git_strategy:
+  commit_rules:
+    - sensitive_data:
+        description: "Handle sensitive data in commits"
+        rules:
+          - "Never commit .env files"
+          - "Use .env.example.template for examples"
+          - "Remove API keys before committing"
+          - "Check git diff for sensitive data"
+        error_patterns:
+          - "*.env"
+          - "*api_key*"
+          - "*secret*"
+          - "*password*"
+
+    - commit_organization:
+        description: "Organize commits logically"
+        structure:
+          - core_files:
+              - "*.py"
+              - "*.json"
+              - "pyproject.toml"
+          - documentation:
+              - "*.md"
+              - "docs/"
+              - "DEV-MAN-CREW/"
+          - scripts:
+              - "scripts/"
+              - "*.sh"
+          - tests:
+              - "tests/"
+              - "conftest.py"
+
+    - commit_messages:
+        description: "Structure commit messages"
+        template: |
+          🏗️ {emoji} {short_description}
+
+          CHANGES:
+          ---------
+          {detailed_changes}
+
+          TECHNICAL DETAILS:
+          -----------------
+          {technical_notes}
+
+          SECURITY:
+          ---------
+          - [ ] No sensitive data
+          - [ ] No API keys
+          - [ ] No credentials
+
+          DOCUMENTATION:
+          -------------
+          - [ ] Updated relevant docs
+          - [ ] Added new docs if needed
