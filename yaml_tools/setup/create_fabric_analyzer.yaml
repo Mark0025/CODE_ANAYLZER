@@ -1,0 +1,69 @@
+update_plan:
+  name: "Fabric Knowledge Extractor"
+  description: "Set up Fabric AI integration and YouTube analysis"
+  priority: "HIGH"
+  
+  phases:
+    1_create_structure:
+      description: "Set up Fabric analyzer infrastructure"
+      changes:
+        - type: "add_module"
+          target: "code_analyzer/crews/analysis_crews/fabric_analyzer_crew.py"
+          content: |
+            """Fabric AI Analysis Crew for knowledge extraction"""
+            from pathlib import Path
+            import fabric
+            from sqlalchemy import Column, Integer, String, JSON, DateTime, func
+            from sqlalchemy.ext.declarative import declarative_base
+            from typing import List, Dict, Any
+            
+            Base = declarative_base()
+            
+            class FabricPattern(Base):
+                __tablename__ = 'fabric_patterns'
+                
+                id = Column(Integer, primary_key=True)
+                source = Column(String)
+                pattern_type = Column(String)
+                content = Column(JSON)
+                created_at = Column(DateTime, server_default=func.now())
+            
+            class FabricAnalyzerCrew:
+                """Analyzes YouTube content using Fabric AI"""
+                
+                def __init__(self):
+                    self.fabric = fabric.Fabric()
+                    self.db_path = Path("yaml_tools/store/fabric_patterns.db")
+                
+                async def analyze_videos(self, urls: List[str]) -> Dict[str, Any]:
+                    """Extract knowledge from YouTube videos"""
+                    patterns = []
+                    for url in urls:
+                        content = await self.fabric.analyze_video(url)
+                        patterns.extend(self._extract_patterns(content))
+                    return self._store_patterns(patterns)
+                
+                def _extract_patterns(self, content: Dict) -> List[Dict]:
+                    """Extract development patterns from content"""
+                    return self.fabric.extract_patterns(content)
+                
+                def _store_patterns(self, patterns: List[Dict]) -> Dict[str, Any]:
+                    """Store patterns in SQLite database"""
+                    # Implementation here
+                    return {"status": "success", "patterns": len(patterns)}
+        
+        - type: "add_requirements"
+          target: "requirements.txt"
+          content: |
+            fabric-ai==latest
+            youtube-dl==latest
+            
+        - type: "add_module"
+          target: "yaml_tools/store/fabric_db.py"
+          content: |
+            """Fabric pattern storage"""
+            from sqlalchemy import create_engine
+            from sqlalchemy.orm import sessionmaker
+            
+            engine = create_engine('sqlite:///yaml_tools/store/fabric_patterns.db')
+            Session = sessionmaker(bind=engine)

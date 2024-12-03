@@ -1,0 +1,12 @@
+update_plan:
+  name: "Debug File Operations"
+  description: "Track actual file system changes"
+  priority: "HIGH"
+  
+  phases:
+    1_test_file_ops:
+      description: "Test file operations with debug logging"
+      changes:
+        - type: "create_directory"
+          target: "code_analyzer/crews/test_ops"
+          debug: true

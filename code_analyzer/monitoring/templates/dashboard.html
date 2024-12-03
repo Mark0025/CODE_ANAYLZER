@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - CODE_ANALYZER{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1>System Dashboard</h1>
+        
+        <!-- System Status -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">System Status</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="status-card">
+                            <h6>Active Crews</h6>
+                            <span class="status-value">{{ active_crews|length }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="status-card">
+                            <h6>Recent Operations</h6>
+                            <span class="status-value">{{ recent_operations|length }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="status-card">
+                            <h6>System Health</h6>
+                            <span class="status-value {{ system_health|lower }}">{{ system_health }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Logs -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Recent Logs</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Level</th>
+                                <th>Message</th>
+                                <th>Crew</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logs-table">
+                            {% for log in logs %}
+                            <tr>
+                                <td>{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                <td><span class="badge bg-{{ log.level|lower }}">{{ log.level }}</span></td>
+                                <td>{{ log.message }}</td>
+                                <td>{{ log.crew_name or 'system' }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // WebSocket connection for real-time updates
+    const ws = new WebSocket('ws://localhost:8000/ws');
+    const logsTable = document.getElementById('logs-table');
+
+    ws.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        if (data.type === 'logs') {
+            updateLogs(data.data);
+        }
+    };
+
+    function updateLogs(logs) {
+        const rows = logs.map(log => `
+            <tr>
+                <td>${log.timestamp}</td>
+                <td><span class="badge bg-${log.level.toLowerCase()}">${log.level}</span></td>
+                <td>${log.message}</td>
+                <td>${log.crew_name || 'system'}</td>
+            </tr>
+        `).join('');
+        logsTable.innerHTML = rows + logsTable.innerHTML;
+    }
+</script>
+{% endblock %}

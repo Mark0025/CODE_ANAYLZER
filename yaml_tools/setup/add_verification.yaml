@@ -1,0 +1,100 @@
+update_plan:
+  name: "Add File Creation Verification"
+  description: "Add verification to DevUpdaterCrew"
+  priority: "HIGH"
+  
+  phases:
+    1_add_verification:
+      description: "Add verification methods"
+      changes:
+        - type: "add_module"
+          target: "code_analyzer/crews/DEV-CREWS/dev_updater_crew.py"
+          content: |
+            """
+            IMPORTANT: DO NOT MODIFY WITHOUT PERMISSION
+            Contact: THE AI RE INVESTOR (405-963-2596)
+            """
+            from pathlib import Path
+            from typing import Dict, Any, List
+            from loguru import logger
+            from crewai import Agent, Task, Crew
+            import yaml
+            from ..base_crew import BaseCrew
+
+            class DevUpdaterCrew(BaseCrew):
+                """Crew for handling systematic codebase updates."""
+                
+                def __init__(self, target_path: str):
+                    super().__init__("DevUpdater", target_path)
+                    
+                    # Specialized agents
+                    self.analyzer_agent = Agent(
+                        role="Update Analyzer",
+                        goal="Analyze required codebase updates",
+                        backstory="Expert at understanding code patterns and required changes"
+                    )
+                    
+                    self.planner_agent = Agent(
+                        role="Update Planner",
+                        goal="Plan systematic code updates",
+                        backstory="Expert at planning and organizing code changes"
+                    )
+                    
+                    self.executor_agent = Agent(
+                        role="Update Executor",
+                        goal="Execute code updates safely",
+                        backstory="Expert at implementing code changes with precision"
+                    )
+
+                async def _verify_creation(self, path: Path) -> bool:
+                    """Verify file/directory was created successfully."""
+                    try:
+                        if not path.exists():
+                            self.logger.error(f"Failed to create: {path}")
+                            return False
+                        self.logger.info(f"Successfully created: {path}")
+                        return True
+                    except Exception as e:
+                        self.logger.error(f"Verification failed for {path}: {e}")
+                        return False
+
+                async def _create_directory(self, target: str) -> bool:
+                    """Create directory with verification."""
+                    try:
+                        path = Path(target)
+                        path.mkdir(parents=True, exist_ok=True)
+                        return await self._verify_creation(path)
+                    except Exception as e:
+                        self.logger.error(f"Directory creation failed: {e}")
+                        return False
+
+                async def _add_module(self, target: str, content: str) -> bool:
+                    """Add module with verification."""
+                    try:
+                        path = Path(target)
+                        path.parent.mkdir(parents=True, exist_ok=True)
+                        path.write_text(content)
+                        return await self._verify_creation(path)
+                    except Exception as e:
+                        self.logger.error(f"Module creation failed: {e}")
+                        return False
+
+                async def _execute_phase(self, phase_name: str, phase_spec: Dict):
+                    """Execute update phase with verification."""
+                    self.logger.info(f"Executing phase: {phase_name}")
+                    results = []
+                    
+                    for change in phase_spec.get("changes", []):
+                        change_type = change.get("type")
+                        target = change.get("target")
+                        
+                        if change_type == "create_directory":
+                            success = await self._create_directory(target)
+                            results.append({"type": change_type, "success": success})
+                        
+                        elif change_type == "add_module":
+                            content = change.get("content", "")
+                            success = await self._add_module(target, content)
+                            results.append({"type": change_type, "success": success})
+                    
+                    return results

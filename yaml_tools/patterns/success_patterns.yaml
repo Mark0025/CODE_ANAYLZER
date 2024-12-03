@@ -1,0 +1,36 @@
+# Track successful YAML patterns
+patterns:
+    model_methods:
+        success_rate: 98%
+        example: |
+            - modify_class:
+                path: "path/to/model.py"
+                class_name: "ClassName"
+                methods:
+                    - name: "method_name"
+                      code: |
+                        @property
+                        def method_name(self):
+                            return self.__dict__
+
+    database_updates:
+        success_rate: 95%
+        example: |
+            - create_table:
+                name: "table_name"
+                schema: |
+                    CREATE TABLE IF NOT EXISTS table_name (
+                        id INTEGER PRIMARY KEY,
+                        ...
+                    )
+
+    interface_updates:
+        success_rate: 90%
+        example: |
+            - modify_file:
+                path: "templates/file.html"
+                content: |
+                    {% extends "base.html" %}
+                    {% block content %}
+                    ...
+                    {% endblock %} 

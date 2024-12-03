@@ -1,0 +1,142 @@
+update_plan:
+    name: "LEGO-CITY Index & Organization"
+    version: "1.0.0"
+    priority: "CRITICAL"
+    description: "Catalog and organize all existing functions and components"
+
+    phases:
+        - name: "Analyze Timeline"
+          steps:
+            - name: "Scan History"
+              command: "python -m code_analyzer.scripts.analyze_history"
+              output: "code_analyzer/core/output/analysis/timeline_analysis.json"
+
+            - name: "Extract Functions"
+              command: "python -m code_analyzer.scripts.collect_history"
+              output: "code_analyzer/core/output/analysis/function_catalog.json"
+
+        - name: "Catalog Components"
+          steps:
+            - name: "Index Crews"
+              command: "python -m code_analyzer.scripts.index_components"
+              args:
+                path: "code_analyzer/crews/**/*.py"
+                patterns:
+                  - ".*Crew$"
+                  - "^(analyze|update|verify).*"
+                output: "crews_catalog.json"
+
+            - name: "Index Scripts"
+              command: "python -m code_analyzer.scripts.index_components"
+              args:
+                path: "code_analyzer/scripts/**/*.py"
+                patterns:
+                  - ".*"
+                  - "python -m.*"
+                output: "scripts_catalog.json"
+
+            - name: "Index YAMLs"
+              command: "python -m code_analyzer.scripts.index_components"
+              args:
+                path: "yaml_tools/**/*.yaml"
+                patterns:
+                  - "status: completed"
+                  - "update_plan:"
+                output: "yaml_catalog.json"
+
+        - name: "Generate Visual Index"
+          steps:
+            - name: "Create District Map"
+              template:
+                file: "code_analyzer/monitoring/templates/dev_now.html"
+                section: "lego_city_map"
+                content: |
+                    <div class="lego-city-map">
+                        <!-- Crews District -->
+                        <div class="district crews">
+                            <h3>Crews District</h3>
+                            {% for crew in crews %}
+                            <div class="building crew-building">
+                                <div class="name">{{ crew.name }}</div>
+                                <div class="functions">
+                                    {% for func in crew.functions %}
+                                    <div class="function">{{ func }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Scripts District -->
+                        <div class="district scripts">
+                            <h3>Scripts District</h3>
+                            {% for script in scripts %}
+                            <div class="building script-building">
+                                <div class="name">{{ script.name }}</div>
+                                <div class="commands">
+                                    {% for cmd in script.commands %}
+                                    <div class="command">{{ cmd }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- YAML District -->
+                        <div class="district yamls">
+                            <h3>YAML District</h3>
+                            {% for yaml in yamls %}
+                            <div class="building yaml-building">
+                                <div class="name">{{ yaml.name }}</div>
+                                <div class="success-rate">{{ yaml.success_rate }}%</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+    styles:
+        file: "code_analyzer/monitoring/static/css/lego_city.css"
+        content: |
+            .lego-city-map {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+                padding: 20px;
+            }
+
+            .district {
+                border: 2px solid #ddd;
+                border-radius: 8px;
+                padding: 15px;
+            }
+
+            .building {
+                margin: 10px 0;
+                padding: 10px;
+                background: #fff;
+                border-radius: 4px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+
+    database:
+        table: "function_catalog"
+        columns:
+            - name: "function_name"
+              type: "string"
+            - name: "type"
+              type: "string"
+            - name: "location"
+              type: "string"
+            - name: "success_rate"
+              type: "float"
+            - name: "last_used"
+              type: "datetime"
+            - name: "usage_count"
+              type: "integer"
+
+    monitoring:
+        track:
+            - "function_usage"
+            - "success_rates"
+            - "popular_patterns"
+            - "district_health" 

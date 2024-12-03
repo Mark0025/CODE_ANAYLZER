@@ -1,0 +1,39 @@
+update_plan:
+  name: "Update Documentation"
+  description: "Update project documentation with latest features"
+  priority: "HIGH"
+  
+  content:
+    readme:
+      description: |
+        CODE_ANALYZER is an AI-powered code analysis and improvement tool that uses 
+        CrewAI to systematically analyze, document, and improve Python codebases.
+      
+      features: |
+        - 🤖 AI-Powered Analysis: Uses CrewAI for intelligent code review
+        - 🔄 Systematic Updates: DevUpdaterCrew for automated code improvements
+        - 📝 Documentation Generation: DocUpdaterCrew for keeping docs current
+        - ⚡ Resource Management: Smart handling of API calls and file operations
+      
+      components: |
+        - DevUpdaterCrew: Systematic code updates ✅
+        - DocUpdaterCrew: Documentation management ✅
+        - BaseCrew: Resource management and utilities ✅
+      
+      quick_start: |
+        from code_analyzer import CodeAnalyzer
+        
+        # Initialize analyzer
+        analyzer = CodeAnalyzer("./my_project")
+        
+        # Run analysis
+        results = await analyzer.analyze()
+      
+      documentation: |
+        Full documentation available at [docs/](docs/)
+      
+      contributing: |
+        We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md)
+      
+      license: |
+        MIT License. See [LICENSE](LICENSE)

@@ -1,0 +1,211 @@
+{
+  "last_updated": "2024-11-27T10:15:23.081067-06:00",
+  "test_coverage": {
+    "total_lines": 0,
+    "covered_lines": 0,
+    "percentage": 0
+  },
+  "costs": {
+    "total_spent": 0,
+    "last_run_cost": 0,
+    "average_cost_per_run": 0
+  },
+  "crews": {
+    "CodeAnalysis": {
+      "status": "working",
+      "events": [
+        {
+          "crew": "CodeAnalysis",
+          "event": "initialized",
+          "timestamp": "2024-11-27T10:13:21.201729-06:00",
+          "details": {}
+        },
+        {
+          "crew": "CodeAnalysis",
+          "event": "task_completed",
+          "timestamp": "2024-11-27T10:13:34.417009-06:00",
+          "details": {
+            "task_type": "analysis",
+            "output_size": 4805
+          }
+        },
+        {
+          "crew": "CodeAnalysis",
+          "event": "initialized",
+          "timestamp": "2024-11-27T10:13:34.733691-06:00",
+          "details": {}
+        },
+        {
+          "crew": "CodeAnalysis",
+          "event": "task_completed",
+          "timestamp": "2024-11-27T10:13:45.053173-06:00",
+          "details": {
+            "task_type": "analysis",
+            "output_size": 4021
+          }
+        },
+        {
+          "crew": "CodeAnalysis",
+          "event": "initialized",
+          "timestamp": "2024-11-27T10:13:45.067869-06:00",
+          "details": {}
+        },
+        {
+          "crew": "CodeAnalysis",
+          "event": "task_completed",
+          "timestamp": "2024-11-27T10:13:57.023965-06:00",
+          "details": {
+            "task_type": "analysis",
+            "output_size": 5013
+          }
+        },
+        {
+          "crew": "CodeAnalysis",
+          "event": "initialized",
+          "timestamp": "2024-11-27T10:13:57.036502-06:00",
+          "details": {}
+        },
+        {
+          "crew": "CodeAnalysis",
+          "event": "task_completed",
+          "timestamp": "2024-11-27T10:14:08.746622-06:00",
+          "details": {
+            "task_type": "analysis",
+            "output_size": 4869
+          }
+        },
+        {
+          "crew": "CodeAnalysis",
+          "event": "initialized",
+          "timestamp": "2024-11-27T10:14:08.763145-06:00",
+          "details": {}
+        },
+        {
+          "crew": "CodeAnalysis",
+          "event": "task_completed",
+          "timestamp": "2024-11-27T10:14:20.631072-06:00",
+          "details": {
+            "task_type": "analysis",
+            "output_size": 4475
+          }
+        },
+        {
+          "crew": "CodeAnalysis",
+          "event": "initialized",
+          "timestamp": "2024-11-27T10:14:20.648686-06:00",
+          "details": {}
+        },
+        {
+          "crew": "CodeAnalysis",
+          "event": "task_completed",
+          "timestamp": "2024-11-27T10:14:33.732860-06:00",
+          "details": {
+            "task_type": "analysis",
+            "output_size": 5389
+          }
+        },
+        {
+          "crew": "CodeAnalysis",
+          "event": "initialized",
+          "timestamp": "2024-11-27T10:14:52.194246-06:00",
+          "details": {}
+        },
+        {
+          "crew": "CodeAnalysis",
+          "event": "initialized",
+          "timestamp": "2024-11-27T10:14:52.247067-06:00",
+          "details": {}
+        },
+        {
+          "crew": "CodeAnalysis",
+          "event": "task_completed",
+          "timestamp": "2024-11-27T10:15:08.265978-06:00",
+          "details": {
+            "task_type": "analysis",
+            "output_size": 4798
+          }
+        },
+        {
+          "crew": "CodeAnalysis",
+          "event": "initialized",
+          "timestamp": "2024-11-27T10:15:08.582308-06:00",
+          "details": {}
+        },
+        {
+          "crew": "CodeAnalysis",
+          "event": "task_completed",
+          "timestamp": "2024-11-27T10:15:21.346623-06:00",
+          "details": {
+            "task_type": "analysis",
+            "output_size": 4527
+          }
+        }
+      ],
+      "metrics": {
+        "tasks_completed": 8,
+        "tasks_failed": 0,
+        "last_success": "2024-11-27T10:15:21.346623-06:00"
+      }
+    },
+    "CrewAIDocs": {
+      "status": "working",
+      "events": [
+        {
+          "crew": "CrewAIDocs",
+          "event": "initialized",
+          "timestamp": "2024-11-27T10:14:20.697960-06:00",
+          "details": {}
+        },
+        {
+          "crew": "CrewAIDocs",
+          "event": "task_completed",
+          "timestamp": "2024-11-27T10:14:43.493363-06:00",
+          "details": {
+            "task_type": "documentation",
+            "output_size": 4425
+          }
+        },
+        {
+          "crew": "CrewAIDocs",
+          "event": "initialized",
+          "timestamp": "2024-11-27T10:14:43.501814-06:00",
+          "details": {}
+        },
+        {
+          "crew": "CrewAIDocs",
+          "event": "task_completed",
+          "timestamp": "2024-11-27T10:14:52.176621-06:00",
+          "details": {
+            "task_type": "documentation",
+            "output_size": 5036
+          }
+        }
+      ],
+      "metrics": {
+        "tasks_completed": 2,
+        "tasks_failed": 0,
+        "last_success": "2024-11-27T10:14:52.176621-06:00"
+      }
+    }
+  },
+  "tests": {
+    "passing": 7,
+    "failing": 14,
+    "total": 21
+  },
+  "history": [
+    {
+      "timestamp": "2024-11-27T10:15:23.081037-06:00",
+      "test_status": {
+        "passing": 7,
+        "failing": 14,
+        "total": 21
+      },
+      "coverage": {
+        "total_lines": 0,
+        "covered_lines": 0,
+        "percentage": 0
+      }
+    }
+  ]
+}

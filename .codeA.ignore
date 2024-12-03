@@ -1,0 +1,38 @@
+# System files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Environment
+.env
+.venv/
+venv/
+ENV/
+
+# Coverage
+htmlcov/
+.coverage
+coverage.xml
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Generated files
+crews/crew-output/**/latest_*.json
+backup-*/
+
+# Keep only our core code
+!code_analyzer/core/*.py
+!code_analyzer/crews/*.py
+!code_analyzer/cli/*.py
+!code_analyzer/utils/*.py
+
+# Documentation (handled separately by GoalAnalysisCrew)
+*.md
+!README.md 

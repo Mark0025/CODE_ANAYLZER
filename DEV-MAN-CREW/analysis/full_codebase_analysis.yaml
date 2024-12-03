@@ -1,0 +1,29 @@
+analysis_request:
+  name: "Full Codebase Architecture Analysis"
+  focus_areas:
+    - Documentation Structure
+    - Code Flow
+    - Database Integration
+    - Error Patterns
+    - Resource Management
+    
+  output_format:
+    type: "markdown"
+    sections:
+      - "System Overview"
+      - "Component Analysis"
+      - "Data Flow"
+      - "Error Analysis"
+      - "Documentation Map"
+      
+  special_focus:
+    - "Process Flow from Start to Finish"
+    - "Database Integration Points"
+    - "Documentation Organization"
+    - "Resource Management"
+    
+  validation_points:
+    - "Import Structures"
+    - "Resource Cleanup"
+    - "Error Handling"
+    - "Documentation Completeness" 

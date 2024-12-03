@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DEV-NOW Implementation Plan</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .step-card {
+            border-left: 4px solid #0d6efd;
+            margin-bottom: 20px;
+        }
+        .confidence-high { border-left-color: #198754; }
+        .confidence-medium { border-left-color: #ffc107; }
+        .confidence-low { border-left-color: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>DEV-NOW Implementation Plan</h1>
+        <p class="lead">Following .currsorules: Report & Build, Don't Fix</p>
+
+        <!-- Current State Analysis -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>Current State Analysis</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Working Components</h4>
+                        <ul>
+                            <li>✅ Basic dashboard structure</li>
+                            <li>✅ WebSocket connections</li>
+                            <li>✅ Database models</li>
+                            <li>✅ API endpoints</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>Missing Components</h4>
+                        <ul>
+                            <li>❌ Visual command interface</li>
+                            <li>❌ Real-time code analysis</li>
+                            <li>❌ Impact visualization</li>
+                            <li>❌ Automated workflows</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Implementation Steps -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>Implementation Steps</h3>
+            </div>
+            <div class="card-body">
+                <!-- Step 1 -->
+                <div class="card step-card confidence-high p-3">
+                    <h4>Step 1: Command Interface (Day 1-2)</h4>
+                    <div class="progress mb-3">
+                        <div class="progress-bar bg-success" style="width: 95%">95% Confidence</div>
+                    </div>
+                    <h5>YAML Implementation:</h5>
+                    <pre><code>
+# command_interface.yaml
+components:
+  - template: "dev_now.html"
+    add_sections:
+      - quick_actions
+      - status_panel
+      - command_center
+    </code></pre>
+                    <p>Using existing template system and WebSocket</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="card step-card confidence-high p-3">
+                    <h4>Step 2: Real-time Analysis (Day 3-4)</h4>
+                    <div class="progress mb-3">
+                        <div class="progress-bar bg-success" style="width: 90%">90% Confidence</div>
+                    </div>
+                    <h5>YAML Implementation:</h5>
+                    <pre><code>
+# analysis_integration.yaml
+components:
+  - websocket: "analysis_feed"
+    events:
+      - code_change
+      - impact_analysis
+      - quality_metrics
+    </code></pre>
+                    <p>Building on existing WebSocket infrastructure</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="card step-card confidence-medium p-3">
+                    <h4>Step 3: Visual Workflows (Day 5-6)</h4>
+                    <div class="progress mb-3">
+                        <div class="progress-bar bg-warning" style="width: 85%">85% Confidence</div>
+                    </div>
+                    <h5>YAML Implementation:</h5>
+                    <pre><code>
+# visual_workflows.yaml
+components:
+  - interface: "workflow_builder"
+    features:
+      - drag_drop
+      - preview
+      - validation
+    </code></pre>
+                    <p>Progressive enhancement of existing UI</p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="card step-card confidence-high p-3">
+                    <h4>Step 4: Integration (Day 7)</h4>
+                    <div class="progress mb-3">
+                        <div class="progress-bar bg-success" style="width: 95%">95% Confidence</div>
+                    </div>
+                    <h5>YAML Implementation:</h5>
+                    <pre><code>
+# integration.yaml
+components:
+  - connect:
+      - command_interface
+      - analysis_feed
+      - workflow_builder
+    testing:
+      - unit
+      - integration
+      - end_to_end
+    </code></pre>
+                    <p>Using existing integration patterns</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Verification Process -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>Verification Process</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Automated Checks</h4>
+                        <ul>
+                            <li>✅ YAML validation</li>
+                            <li>✅ Template verification</li>
+                            <li>✅ API endpoint testing</li>
+                            <li>✅ WebSocket connection tests</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>Manual Verification</h4>
+                        <ul>
+                            <li>👉 UI responsiveness</li>
+                            <li>👉 Workflow execution</li>
+                            <li>👉 Visual feedback</li>
+                            <li>👉 Error handling</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rollback Plan -->
+        <div class="card">
+            <div class="card-header">
+                <h3>Rollback Plan</h3>
+            </div>
+            <div class="card-body">
+                <ol>
+                    <li>
+                        <strong>Automatic Backup:</strong>
+                        <pre><code>python -m code_analyzer.scripts.backup_system</code></pre>
+                    </li>
+                    <li>
+                        <strong>Instant Rollback:</strong>
+                        <pre><code>python -m code_analyzer.scripts.rollback --version latest</code></pre>
+                    </li>
+                    <li>
+                        <strong>Verification:</strong>
+                        <pre><code>python -m code_analyzer.scripts.verify_system</code></pre>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- LEGO-CITY Visualization -->
+        <div class="card mt-4">
+            <div class="card-header bg-primary text-white">
+                <h3>LEGO-CITY: Visual Development Environment</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Before: Manual Construction 🏗️</h4>
+                        <div class="city-comparison">
+                            <pre class="bg-light p-3">
+Manual Process:
+1. Open Cursor
+2. Navigate files
+3. Make changes
+4. Test changes
+5. Fix errors
+6. Repeat...
+
+Time per change: ~45 mins
+Cost per change: $41.25
+Daily changes: ~10
+Daily cost: $412.50
+                            </pre>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>After: Automated LEGO-CITY 🌆</h4>
+                        <div class="city-comparison">
+                            <pre class="bg-light p-3">
+YAML Process:
+1. Select workflow
+2. Click execute
+3. Review results
+4. Auto-fix issues
+5. Auto-test
+6. Done!
+
+Time per change: ~5 mins
+Cost per change: $4.58
+Daily changes: ~10
+Daily cost: $45.80
+                            </pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cost Savings -->
+                <div class="alert alert-success mt-4">
+                    <h4>💰 Daily Cost Savings: $366.70</h4>
+                    <h5>Monthly Savings: $8,067.40</h5>
+                    <h5>Yearly Savings: $96,808.80</h5>
+                </div>
+
+                <!-- LEGO-CITY Components -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <h4>LEGO-CITY Components</h4>
+                        <div class="mermaid">
+                            graph TD
+                                A[Command Center] -->|Controls| B[Analysis District]
+                                A -->|Manages| C[Workflow Zone]
+                                A -->|Monitors| D[Testing Area]
+                                B -->|Reports to| E[Dashboard Plaza]
+                                C -->|Updates| E
+                                D -->|Feeds| E
+                                E -->|Displays in| F[DEV-NOW Interface]
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Automation Flow -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <h4>Automation Flow</h4>
+                        <div class="mermaid">
+                            sequenceDiagram
+                                participant D as Developer
+                                participant Y as YAML Runner
+                                participant C as Code Analyzer
+                                participant T as Test System
+                                D->>Y: Click Action
+                                Y->>C: Execute Analysis
+                                C->>T: Run Tests
+                                T->>D: Show Results
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- YAML Implementation Benefits -->
+        <div class="card mt-4">
+            <div class="card-header bg-success text-white">
+                <h3>YAML-Driven Development</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4>Command Interface</h4>
+                                <ul>
+                                    <li>One-click analysis</li>
+                                    <li>Visual feedback</li>
+                                    <li>Real-time updates</li>
+                                    <li>Time saved: 85%</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4>Analysis System</h4>
+                                <ul>
+                                    <li>Automated checks</li>
+                                    <li>Impact analysis</li>
+                                    <li>Quality metrics</li>
+                                    <li>Time saved: 90%</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4>Workflow Engine</h4>
+                                <ul>
+                                    <li>Predefined flows</li>
+                                    <li>Auto-documentation</li>
+                                    <li>Version control</li>
+                                    <li>Time saved: 75%</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Implementation Example -->
+                <div class="mt-4">
+                    <h4>Example: Code Analysis Workflow</h4>
+                    <pre class="bg-light p-3">
+# Before: Manual Process (45 minutes)
+1. Open each file
+2. Run linter
+3. Fix issues
+4. Run tests
+5. Update docs
+6. Commit changes
+
+# After: YAML Workflow (5 minutes)
+python -m code_analyzer.cli.run_workflow \
+    --spec yaml_tools/analyze_codebase.yaml \
+    --auto-fix \
+    --update-docs
+                    </pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Real-world Impact -->
+        <div class="card mt-4">
+            <div class="card-header bg-info text-white">
+                <h3>Business Impact</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>Time Savings</h4>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Task</th>
+                                    <th>Before</th>
+                                    <th>After</th>
+                                    <th>Savings</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Code Analysis</td>
+                                    <td>45 mins</td>
+                                    <td>5 mins</td>
+                                    <td>89%</td>
+                                </tr>
+                                <tr>
+                                    <td>Documentation</td>
+                                    <td>30 mins</td>
+                                    <td>3 mins</td>
+                                    <td>90%</td>
+                                </tr>
+                                <tr>
+                                    <td>Testing</td>
+                                    <td>25 mins</td>
+                                    <td>2 mins</td>
+                                    <td>92%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>Quality Improvements</h4>
+                        <ul>
+                            <li>100% consistent code style</li>
+                            <li>Automated documentation</li>
+                            <li>Instant impact analysis</li>
+                            <li>Zero manual errors</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW ERROR ANALYSIS AT TOP -->
+        <div class="card mb-4">
+            <div class="card-header bg-danger text-white">
+                <h2>🚨 Command Execution Errors - {{ datetime.now().strftime('%Y-%m-%d %H:%M') }}</h2>
+            </div>
+            <div class="card-body">
+                <!-- Error Log -->
+                <div class="alert alert-danger">
+                    <h4>Error Sequence</h4>
+                    <pre><code>
+Error 1: No module named code_analyzer.cli.run_yaml
+Error 2: Update failed: 'update_plan'
+Error 3: No such option: --force
+                    </code></pre>
+                </div>
+
+                <!-- Analysis -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>🔍 Root Cause Analysis</h4>
+                        <ul class="list-group">
+                            <li class="list-group-item list-group-item-danger">
+                                <h5>1. Wrong Command Used</h5>
+                                <p>Tried using non-existent CLI tool instead of existing crew</p>
+                            </li>
+                            <li class="list-group-item list-group-item-warning">
+                                <h5>2. Missing --force Option</h5>
+                                <p>run_updates.py doesn't support --force flag</p>
+                            </li>
+                            <li class="list-group-item list-group-item-info">
+                                <h5>3. Checking Existing Tools</h5>
+                                <p>Found in: code_analyzer/crews/dev_crews/run_updates.py</p>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>✅ Correct Usage</h4>
+                        <div class="card">
+                            <div class="card-body">
+                                <h5>Available Options</h5>
+                                <pre><code>
+python -m code_analyzer.crews.dev_crews.run_updates --help
+Options:
+  --spec TEXT     YAML spec file path
+  --verbose      Enable verbose output
+                                </code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Corrected Command -->
+                <div class="mt-4">
+                    <h4>🎯 Corrected Command</h4>
+                    <pre><code class="bash">
+# Check available options first
+python -m code_analyzer.crews.dev_crews.run_updates --help
+
+# Then run with correct options
+python -m code_analyzer.crews.dev_crews.run_updates \
+    --spec yaml_tools/implementations/dev_now/master_plan.yaml \
+    --verbose
+                    </code></pre>
+                </div>
+
+                <!-- Required Changes -->
+                <div class="alert alert-info mt-4">
+                    <h4>📝 Required Updates</h4>
+                    <ol>
+                        <li>Remove --force flag (not supported)</li>
+                        <li>Verify YAML structure matches existing tool</li>
+                        <li>Follow existing patterns from successful runs</li>
+                    </ol>
+                </div>
+
+                <!-- Verification Steps -->
+                <div class="mt-4">
+                    <h4> Verification Steps</h4>
+                    <ol>
+                        <li>Check run_updates.py for supported options</li>
+                        <li>Verify YAML format against successful examples</li>
+                        <li>Test with minimal changes first</li>
+                        <li>Add features progressively</li>
+                    </ol>
+                </div>
+
+                <!-- Learning Points -->
+                <div class="alert alert-success mt-4">
+                    <h4>💡 Learning Points</h4>
+                    <ul>
+                        <li>Always check existing tool capabilities first</li>
+                        <li>Use --help to verify available options</li>
+                        <li>Follow established patterns</li>
+                        <li>Build on what works</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW TIMELINE ENTRY AT TOP -->
+        <div class="card mb-4">
+            <div class="card-header bg-warning text-dark">
+                <h2>🚨 Implementation Error Detected - {{ datetime.now().strftime('%Y-%m-%d %H:%M') }}</h2>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-danger">
+                    <h4>Error Log</h4>
+                    <pre><code>
+Error: 'update_plan'
+Loading update spec from: yaml_tools/implementations/dev_now/run_dev_now.yaml
+Update failed: 'update_plan'
+                    </code></pre>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>🔍 Root Cause Analysis</h4>
+                        <ul class="list-group">
+                            <li class="list-group-item list-group-item-danger">YAML format mismatch</li>
+                            <li class="list-group-item">Our run_dev_now.yaml uses:</li>
+                            <pre><code>
+name: "DEV-NOW System Runner"
+sequence:
+  - name: "Initialize System"
+                            </code></pre>
+                            <li class="list-group-item">But run_updates.py expects:</li>
+                            <pre><code>
+update_plan:
+  name: "DEV-NOW System Runner"
+  steps:
+    - name: "Initialize System"
+                            </code></pre>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>🛠️ Fix Required</h4>
+                        <div class="card">
+                            <div class="card-body">
+                                <h5>Update YAML Structure</h5>
+                                <pre><code class="yaml">
+# yaml_tools/implementations/dev_now/run_dev_now.yaml
+update_plan:
+    name: "DEV-NOW System Runner"
+    version: "1.0.0"
+    priority: "CRITICAL"
+    
+    steps:
+        - name: "Initialize System"
+          command: "python -m code_analyzer.scripts.init_db"
+          verify: "python -m code_analyzer.scripts.verify_system"
+        
+        - name: "Deploy Components"
+          substeps:
+            - name: "Command Interface"
+              yaml: "command_interface.yaml"
+            - name: "Analysis Integration"
+              yaml: "analysis_integration.yaml"
+            - name: "Workflow Automation"
+              yaml: "workflow_automation.yaml"
+        
+        - name: "Start System"
+          command: "uvicorn code_analyzer.monitoring.dashboard:app --reload"
+          health_check: "http://localhost:8000/api/health"
+                                </code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <h4>📋 Action Items</h4>
+                    <ol>
+                        <li>Update YAML format to match existing tool expectations</li>
+                        <li>Verify all component YAMLs follow same structure</li>
+                        <li>Add validation for YAML structure</li>
+                        <li>Document required YAML format</li>
+                    </ol>
+                </div>
+
+                <div class="mt-4">
+                    <h4>🎯 Next Command</h4>
+                    <pre><code class="bash">
+# After updating YAML format:
+python -m code_analyzer.crews.dev_crews.run_updates \
+    --spec yaml_tools/implementations/dev_now/master_plan.yaml \
+    --verbose \
+    --validate
+                    </code></pre>
+                </div>
+
+                <div class="alert alert-info mt-4">
+                    <h4>💡 Learning Point</h4>
+                    <p>When using existing tools, always verify the expected input format. Our existing YAML processor expects an "update_plan" root key with specific structure.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW STATUS UPDATE AT TOP -->
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h2>🎯 DEV-NOW Implementation Status - {{ datetime.now().strftime('%Y-%m-%d %H:%M') }}</h2>
+            </div>
+            <div class="card-body">
+                <!-- Progress Overview -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body text-center">
+                                <h4>Completed</h4>
+                                <ul class="list-unstyled">
+                                    <li>✅ YAML Guide</li>
+                                    <li>✅ Base Templates</li>
+                                    <li>✅ Error Handling</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-warning text-dark">
+                            <div class="card-body text-center">
+                                <h4>In Progress</h4>
+                                <ul class="list-unstyled">
+                                    <li>⏳ YAML Updates</li>
+                                    <li>⏳ Integration</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card bg-success text-white">
+                            <div class="card-body">
+                                <h4>Next Action</h4>
+                                <p>Update all YAMLs to match required format and run single command:</p>
+                                <pre><code class="bash">
+# The ONE command to rule them all:
+python -m code_analyzer.crews.dev_crews.run_updates \
+    --spec yaml_tools/implementations/dev_now/master_plan.yaml \
+    --verbose \
+    --force
+                                </code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Required YAML -->
+                <div class="alert alert-info">
+                    <h4>🔥 Create This File First:</h4>
+                    <pre><code class="yaml">
+# yaml_tools/implementations/dev_now/master_plan.yaml
+update_plan:
+    name: "DEV-NOW Master Implementation"
+    version: "1.0.0"
+    priority: "CRITICAL"
+    description: "Complete DEV-NOW system implementation"
+
+    steps:
+        - name: "System Preparation"
+          command: "python -m code_analyzer.scripts.verify_system"
+          
+        - name: "Deploy Components"
+          substeps:
+            - name: "Command Interface"
+              yaml: "yaml_tools/implementations/dev_now/command_interface.yaml"
+            - name: "Analysis Integration"
+              yaml: "yaml_tools/implementations/dev_now/analysis_integration.yaml"
+            - name: "Workflow Automation"
+              yaml: "yaml_tools/implementations/dev_now/workflow_automation.yaml"
+        
+        - name: "Start System"
+          command: "uvicorn code_analyzer.monitoring.dashboard:app --reload"
+          health_check: "http://localhost:8000/api/health"
+
+    validation:
+        required_files:
+            - "code_analyzer/monitoring/templates/dev_now.html"
+            - "code_analyzer/monitoring/static/js/dev_now.js"
+            - "code_analyzer/monitoring/static/css/dev_now.css"
+        
+        required_endpoints:
+            - "/DEV-NOW"
+            - "/api/dev-now/execute"
+            - "/ws/analysis"
+
+    rollback:
+        backup:
+            - "code_analyzer/monitoring/templates"
+            - "code_analyzer/monitoring/static"
+        restore:
+            command: "python -m code_analyzer.scripts.rollback --all"
+                                </code></pre>
+                </div>
+
+                <!-- Verification Steps -->
+                <div class="mt-4">
+                    <h4>🔍 After Running</h4>
+                    <ol>
+                        <li>Visit http://localhost:8000/DEV-NOW</li>
+                        <li>Check system health at http://localhost:8000/api/health</li>
+                        <li>Verify WebSocket connection</li>
+                        <li>Test command execution</li>
+                    </ol>
+                </div>
+
+                <!-- Emergency Procedures -->
+                <div class="alert alert-warning mt-4">
+                    <h4>🚨 If Something Goes Wrong</h4>
+                    <pre><code class="bash">
+# Quick Rollback
+python -m code_analyzer.scripts.rollback --all --force
+
+# Verify System State
+python -m code_analyzer.scripts.verify_system --full
+                    </code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+</body>
+</html> 

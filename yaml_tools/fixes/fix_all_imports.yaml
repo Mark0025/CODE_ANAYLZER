@@ -1,0 +1,15 @@
+update_plan:
+  name: "Fix All Import Paths"
+  description: "Update all model imports to use correct path"
+  priority: "HIGH"
+  
+  phases:
+    1_fix_imports:
+      description: "Update all model imports"
+      changes:
+        - type: "modify_imports"
+          target: "code_analyzer/cli/**/*.py"
+          updates:
+            - type: "replace"
+              old: "code_analyzer.crews.models"
+              new: "code_analyzer.models"

@@ -1,0 +1,38 @@
+analysis_order:
+  1_core:
+    - core/__init__.py
+    - core/analyzer.py
+    - core/utils.py
+    description: "Core functionality, analyzed first"
+    
+  2_utils:
+    - utils/helpers.py
+    - utils/debug.py
+    description: "Utility functions, analyzed second"
+    
+  3_cli:
+    - cli/main.py
+    - cli/test_runner.py
+    description: "CLI interfaces, analyzed third"
+    
+  4_crews:
+    - crews/base_crew.py
+    - crews/code_analysis_crew.py
+    - crews/clean_dir_crew.py
+    description: "AI crews, analyzed fourth"
+    
+  5_tests:
+    - tests/test_analyzer.py
+    - tests/test_crews.py
+    description: "Tests, analyzed last"
+
+analysis_strategy:
+  batch_size: 5
+  rate_limit: 3 # requests per minute
+  cost_per_file: 0.02 # USD
+  model_selection:
+    core: "gpt-4"
+    utils: "gpt-3.5-turbo"
+    cli: "gpt-3.5-turbo"
+    crews: "gpt-4"
+    tests: "gpt-3.5-turbo" 

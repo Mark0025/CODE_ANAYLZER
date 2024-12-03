@@ -1,0 +1,79 @@
+update_plan:
+  name: "Fix Package Structure"
+  description: "Correct imports and package installation"
+  priority: "HIGH"
+  
+  phases:
+    1_fix_imports:
+      description: "Fix relative imports"
+      changes:
+        - type: "modify_imports"
+          target: "code_analyzer/crews/doc_crews/doc_updater_crew.py"
+          content: |
+            from code_analyzer.crews.base_crew import BaseCrew
+        
+        - type: "modify_imports"
+          target: "code_analyzer/crews/analysis_crews/pattern_detector.py"
+          content: |
+            from code_analyzer.crews.base_crew import BaseCrew
+        
+        - type: "modify_imports"
+          target: "code_analyzer/crews/analysis_crews/ast_analyzer.py"
+          content: |
+            from code_analyzer.crews.base_crew import BaseCrew
+    
+    2_add_init_files:
+      description: "Add missing __init__.py files"
+      changes:
+        - type: "add_module"
+          target: "code_analyzer/__init__.py"
+          content: |
+            """CODE_ANALYZER package"""
+            __version__ = "0.1.0"
+        
+        - type: "add_module"
+          target: "code_analyzer/crews/__init__.py"
+          content: |
+            """Crews package"""
+            from . import base_crew
+            from . import doc_crews
+            from . import analysis_crews
+            from . import workflow_crews
+            
+            __all__ = ['base_crew', 'doc_crews', 'analysis_crews', 'workflow_crews']
+    
+    3_update_setup:
+      description: "Update package setup"
+      changes:
+        - type: "modify_file"
+          target: "pyproject.toml"
+          content: |
+            [project]
+            name = "code_analyzer"
+            version = "0.1.0"
+            description = "Code analysis tool"
+            dependencies = [
+                "sqlalchemy>=2.0.0",
+                "alembic>=1.12.0",
+                "loguru>=0.7.0",
+                "pendulum>=2.0.0",
+                "click>=8.0.0",
+                "crewai>=0.11.0",
+                "python-dotenv>=1.0.0",
+            ]
+            
+            [build-system]
+            requires = ["hatchling"]
+            build-backend = "hatchling.build"
+            
+            [tool.pytest.ini_options]
+            pythonpath = ["."]
+            
+            [tool.setuptools]
+            packages = ["code_analyzer"]
+    
+    4_install_package:
+      description: "Install package in development mode"
+      changes:
+        - type: "shell_command"
+          command: "pip install -e ."

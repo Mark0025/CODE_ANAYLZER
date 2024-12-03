@@ -1,0 +1,42 @@
+crew:
+  name: "ExampleCrew"
+  description: "What this crew does"
+  
+  agents:
+    - name: "MainAnalyzer"
+      role: "Primary analysis agent"
+      goal: "Analyze and provide recommendations"
+      backstory: "Expert at code analysis"
+      tools:
+        - analyze_code
+        - generate_report
+        
+    - name: "DocumentationWriter"
+      role: "Documentation specialist"
+      goal: "Create and update documentation"
+      backstory: "Expert technical writer"
+      tools:
+        - update_markdown
+        - create_diagrams
+
+  tasks:
+    - description: "Analyze codebase"
+      agent: "MainAnalyzer"
+      expected_output: "Analysis report"
+      
+    - description: "Update documentation"
+      agent: "DocumentationWriter"
+      expected_output: "Updated markdown files"
+
+  output:
+    format: "json"
+    locations:
+      - "crews/crew-output/{crew_name}"
+      - "DEV-MAN-CREW/WHATS-WORKING"
+    
+  documentation:
+    update:
+      - "CURRENT-STATUS.md"
+      - "TEST-STATUS.md"
+      - "CREW-STATUS.md"
+      - "TODO.md" 

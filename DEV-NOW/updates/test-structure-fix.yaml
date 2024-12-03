@@ -1,0 +1,93 @@
+update_plan:
+  name: "Test Structure Fix"
+  description: "Fix test file structure and implement initial tests"
+  priority: "HIGH"
+  
+  phases:
+    1_fix_structure:
+      description: "Fix test file structure and remove duplicates"
+      changes:
+        - type: "remove_file"
+          target: "tests/workflow_tests/test_workflow_manager.py"
+          description: "Remove duplicate test file"
+        
+        - type: "remove_file"
+          target: "tests/workflow_tests/test_yaml_generator.py"
+          description: "Remove duplicate test file"
+        
+        - type: "add_module"
+          target: "tests/workflow_tests/components/test_yaml_generator.py"
+          description: "Implement YAML generator tests"
+          content: |
+            """
+            Tests for YAML Specification Generator
+            """
+            import pytest
+            from pathlib import Path
+            from code_analyzer.crews.workflow_crews.yaml_generator import YAMLSpecGenerator
+            
+            @pytest.mark.asyncio
+            async def test_yaml_spec_generation(yaml_generator, test_data_path):
+                """Test YAML spec generation from analysis results"""
+                # Setup test data
+                analysis_results = {
+                    "project_name": "TestProject",
+                    "patterns": [
+                        {
+                            "type": "design_pattern",
+                            "name": "singleton",
+                            "location": {"class": "TestClass"}
+                        }
+                    ],
+                    "complexity_issues": [
+                        {
+                            "file": "test.py",
+                            "type": "cognitive_complexity",
+                            "value": 15
+                        }
+                    ]
+                }
+                
+                # Generate spec
+                spec = await yaml_generator.generate_spec(analysis_results)
+                
+                # Verify structure
+                assert "update_plan" in spec
+                assert "name" in spec["update_plan"]
+                assert "phases" in spec["update_plan"]
+                assert len(spec["update_plan"]["phases"]) > 0
+
+        - type: "add_module"
+          target: "tests/workflow_tests/components/test_workflow_manager.py"
+          description: "Implement workflow manager tests"
+          content: |
+            """
+            Tests for Workflow Manager
+            """
+            import pytest
+            from pathlib import Path
+            from code_analyzer.crews.workflow_crews.workflow_manager import WorkflowManager
+            
+            @pytest.mark.asyncio
+            async def test_workflow_execution(workflow_manager, test_data_path):
+                """Test complete workflow execution"""
+                # Create test file
+                test_file = test_data_path / "test_class.py"
+                test_file.write_text('''
+                class TestPattern:
+                    """Test pattern for detection"""
+                    _instance = None  # Singleton pattern
+                    
+                    def __init__(self):
+                        """Initialize test pattern"""
+                        pass
+                ''')
+                
+                # Run workflow
+                results = await workflow_manager.run_workflow()
+                
+                # Verify results
+                assert results["status"] == "completed"
+                assert "analysis" in results
+                assert "updates" in results
+                assert "docs" in results 

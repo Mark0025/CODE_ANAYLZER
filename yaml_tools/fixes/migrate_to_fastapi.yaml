@@ -1,0 +1,59 @@
+update_plan:
+  name: "Clean Migration to FastAPI"
+  description: "Complete Flask removal and FastAPI setup"
+  priority: "CRITICAL"
+  
+  phases:
+    1_clean_old_code:
+      description: "Remove Flask completely"
+      changes:
+        - type: "delete_file"
+          target: "code_analyzer/monitoring/dashboard.py"
+    
+    2_create_new_dashboard:
+      description: "Create clean FastAPI dashboard"
+      changes:
+        - type: "create_file"
+          target: "code_analyzer/monitoring/dashboard.py"
+          content: |
+            """FastAPI monitoring dashboard."""
+            from fastapi import FastAPI, WebSocket, Request
+            from fastapi.staticfiles import StaticFiles
+            from fastapi.templating import Jinja2Templates
+            from pathlib import Path
+            from loguru import logger
+            from code_analyzer.models.base import get_session
+            from code_analyzer.models.log_entry import LogEntry
+            
+            app = FastAPI(title="CODE_ANALYZER Monitor")
+            templates = Jinja2Templates(directory=str(Path(__file__).parent / "templates"))
+            
+            # Mount static files
+            app.mount("/static", StaticFiles(directory=str(Path(__file__).parent / "static")), name="static")
+            
+            @app.get("/")
+            async def dashboard(request: Request):
+                """Show live monitoring dashboard."""
+                session = get_session()
+                logs = session.query(LogEntry).order_by(
+                    LogEntry.timestamp.desc()
+                ).limit(100).all()
+                return templates.TemplateResponse(
+                    "dashboard.html",
+                    {
+                        "request": request,
+                        "logs": logs
+                    }
+                )
+            
+            @app.websocket("/ws")
+            async def websocket_endpoint(websocket: WebSocket):
+                """Real-time log updates."""
+                await websocket.accept()
+                while True:
+                    session = get_session()
+                    latest = session.query(LogEntry).order_by(
+                        LogEntry.timestamp.desc()
+                    ).first()
+                    if latest:
+                        await websocket.send_json(latest.to_dict())

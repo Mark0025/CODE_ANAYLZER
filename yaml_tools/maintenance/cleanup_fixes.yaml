@@ -1,0 +1,78 @@
+update_plan:
+    name: "Cleanup Fix Directory"
+    version: "1.0.0"
+    priority: "HIGH"
+    description: "Remove non-working fixes and organize working ones"
+
+    phases:
+        1_backup:
+            description: "Backup all fixes"
+            changes:
+                - type: "modify_system"
+                  target: "yaml_tools"
+                  actions:
+                    - backup_directory:
+                        path: "fixes"
+                        backup_path: "backups/fixes_$(date +%Y%m%d)"
+
+        2_cleanup:
+            description: "Remove non-working fixes"
+            changes:
+                - type: "modify_system"
+                  target: "yaml_tools/fixes"
+                  actions:
+                    - remove_files:
+                        files:
+                            - "dev_now_core_fix.yaml"
+                            - "dev_now_minimal_fix.yaml"
+                            - "dev_now_sequential_fix.yaml"
+                            - "dev_now_model_fix.yaml"
+                            - "dev_now_complete_fix.yaml"
+                            - "dev_now_interface_complete.yaml"
+                            - "add_missing_methods.yaml"
+                            - "fix_all_imports.yaml"
+                            - "fix_monitoring.yaml"
+                            - "migrate_to_fastapi.yaml"
+                            - "structure_fix.yaml"
+                            - "update_dependencies.yaml"
+
+        3_organize:
+            description: "Organize working fixes"
+            changes:
+                - type: "modify_system"
+                  target: "yaml_tools/fixes"
+                  actions:
+                    - create_directory:
+                        path: "working"
+                        files:
+                            - "fix_imports.yaml": |
+                                # 95% Success Rate
+                                update_plan:
+                                    name: "Fix Imports"
+                                    version: "1.0.0"
+                                    priority: "HIGH"
+                                    description: "Fix import paths using proven pattern"
+                                    ...
+
+                            - "fix_dependencies.yaml": |
+                                # Basic Dependencies
+                                update_plan:
+                                    name: "Fix Dependencies"
+                                    version: "1.0.0"
+                                    priority: "HIGH"
+                                    description: "Fix core dependencies"
+                                    ...
+
+    validation:
+        required_files:
+            - "yaml_tools/fixes/working/fix_imports.yaml"
+            - "yaml_tools/fixes/working/fix_dependencies.yaml"
+        
+        forbidden_files:
+            - "yaml_tools/fixes/dev_now_*.yaml"
+            - "yaml_tools/fixes/add_missing_methods.yaml"
+
+    monitoring:
+        track:
+            - "cleanup_progress"
+            - "file_organization" 

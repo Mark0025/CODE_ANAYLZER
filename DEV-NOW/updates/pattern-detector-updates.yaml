@@ -1,0 +1,80 @@
+update_plan:
+  name: "Pattern Detector Implementation"
+  description: "Complete pattern detection methods"
+  priority: "HIGH"
+  
+  phases:
+    1_pattern_detection:
+      changes:
+        - type: "add_method"
+          target: "code_analyzer/crews/analysis_crews/pattern_detector.py"
+          name: "_detect_code_smells"
+          content: |
+            async def _detect_code_smells(self, tree: ast.AST) -> List[PatternMatch]:
+                """Detect code smells in AST"""
+                smells = []
+                for node in ast.walk(tree):
+                    if isinstance(node, ast.FunctionDef):
+                        if len(node.body) > 20:
+                            smells.append(PatternMatch(
+                                type="code_smell",
+                                name="long_method",
+                                location={"method": node.name},
+                                confidence=0.8,
+                                description="Method is too long",
+                                suggestion="Consider breaking into smaller methods"
+                            ))
+                return smells
+        
+        - type: "add_method"
+          target: "code_analyzer/crews/analysis_crews/pattern_detector.py"
+          name: "_is_singleton"
+          content: |
+            def _is_singleton(self, tree: ast.AST) -> bool:
+                """Detect singleton pattern"""
+                for node in ast.walk(tree):
+                    if isinstance(node, ast.ClassDef):
+                        has_private_init = False
+                        has_instance_var = False
+                        for child in ast.walk(node):
+                            if isinstance(child, ast.FunctionDef):
+                                if child.name == "__init__":
+                                    has_private_init = True
+                            if isinstance(child, ast.Name):
+                                if child.id == "_instance":
+                                    has_instance_var = True
+                        if has_private_init and has_instance_var:
+                            return True
+                return False
+
+    2_complexity_metrics:
+      changes:
+        - type: "add_method"
+          target: "code_analyzer/crews/analysis_crews/complexity_analyzer.py"
+          name: "_calculate_maintainability"
+          content: |
+            def _calculate_maintainability(self, node: ast.AST) -> float:
+                """Calculate maintainability index"""
+                cyclomatic = self._calculate_cyclomatic(node)
+                cognitive = self._calculate_cognitive(node)
+                return 100 - (cyclomatic * 0.4 + cognitive * 0.6)
+        
+        - type: "add_method"
+          target: "code_analyzer/crews/analysis_crews/complexity_analyzer.py"
+          name: "_calculate_halstead"
+          content: |
+            def _calculate_halstead(self, node: ast.AST) -> Dict[str, float]:
+                """Calculate Halstead metrics"""
+                operators = set()
+                operands = set()
+                for child in ast.walk(node):
+                    if isinstance(child, ast.operator):
+                        operators.add(type(child).__name__)
+                    elif isinstance(child, ast.Name):
+                        operands.add(child.id)
+                return {
+                    "unique_operators": len(operators),
+                    "unique_operands": len(operands),
+                    "total_operators": len(operators),
+                    "total_operands": len(operands)
+                }

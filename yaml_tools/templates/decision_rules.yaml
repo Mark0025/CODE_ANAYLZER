@@ -1,0 +1,57 @@
+update_plan:
+  name: "Decision Framework Update"
+  description: "Clear rules for automation choices"
+  
+  phases:
+    1_cursor_examples:
+      description: "When to use Cursor/Copilot"
+      examples:
+        - type: "type_hints"
+          when: "Single file type updates"
+          yaml_needed: false
+          
+        - type: "docstrings"
+          when: "Documentation updates"
+          yaml_needed: false
+          
+    2_yaml_examples:
+      description: "When to use YAML Automation"
+      examples:
+        - type: "new_feature"
+          when: "Adding new functionality across files"
+          yaml: |
+            update_plan:
+              name: "Add Logging"
+              phases:
+                1_implement:
+                  changes:
+                    - type: "add_logging"
+                      targets: ["*.py"]
+        
+        - type: "pattern_implementation"
+          when: "Implementing design patterns"
+          yaml: |
+            update_plan:
+              name: "Factory Pattern"
+              phases:
+                1_implement:
+                  changes:
+                    - type: "add_pattern"
+                      pattern: "factory"
+                      
+    3_script_examples:
+      description: "When to use Shell Scripts"
+      examples:
+        - type: "cron_job"
+          when: "Scheduled tasks"
+          script: |
+            #!/bin/bash
+            # Daily code analysis
+            python -m code_analyzer.analyze
+            
+        - type: "ci_cd"
+          when: "Build processes"
+          script: |
+            #!/bin/bash
+            # Build and test
+            python -m code_analyzer.build 

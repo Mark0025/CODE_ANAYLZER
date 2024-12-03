@@ -1,0 +1,39 @@
+update_plan:
+  name: "{test_type} Test Setup"
+  description: "Set up {test_type} test infrastructure"
+  priority: "HIGH"
+  
+  phases:
+    1_test_structure:
+      description: "Create test directory structure"
+      changes:
+        - type: "create_directory"
+          target: "tests/{test_type}"
+          description: "Create test directory"
+        
+        - type: "add_module"
+          target: "tests/{test_type}/conftest.py"
+          description: "Add test fixtures"
+          content: |
+            """Test fixtures for {test_type}"""
+            import pytest
+            from pathlib import Path
+            
+            @pytest.fixture
+            def test_data():
+                """Provide test data"""
+                return {test_data}
+    
+    2_test_implementation:
+      description: "Implement test cases"
+      changes:
+        - type: "add_module"
+          target: "tests/{test_type}/test_{feature}.py"
+          description: "Add test implementation"
+          content: |
+            """Tests for {feature}"""
+            import pytest
+            
+            def test_{feature}():
+                """Test {feature} functionality"""
+                {test_implementation} 

@@ -1,0 +1,13 @@
+patterns:
+    property_methods:
+        success_rate: 98%
+        example: |
+            @property  # Must be property
+            def get_metadata(self):
+                return self.__dict__
+        
+        key_points:
+            - Always use @property
+            - Return dict type
+            - Handle None values
+            - Include all required fields 

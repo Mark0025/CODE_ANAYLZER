@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CODE_ANALYZER: A Complete Technical Guide</title>
+    <meta name="author" content="AI Assistant">
+    <meta name="description" content="Comprehensive guide to CODE_ANALYZER architecture and implementation">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        code {
+            background: #f1f1f1;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        pre {
+            background: #f1f1f1;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .note {
+            background: #e1f5fe;
+            padding: 10px;
+            border-left: 4px solid #03a9f4;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>CODE_ANALYZER: A Complete Technical Guide</h1>
+    
+    <div class="section">
+        <h2>1. System Overview</h2>
+        <p>CODE_ANALYZER is a Python-based system that analyzes code quality and provides real-time monitoring through a web interface. The system consists of four main components:</p>
+        <ul>
+            <li><strong>Models</strong>: Database structures and data management</li>
+            <li><strong>Monitoring</strong>: Web dashboard and real-time updates</li>
+            <li><strong>Crews</strong>: AI-powered analysis teams</li>
+            <li><strong>Scripts</strong>: Utility functions and initialization tools</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>2. Directory Structure</h2>
+        <pre>
+code_analyzer/
+├── models/              # Database models
+│   ├── base.py         # Database configuration
+│   ├── db_manager.py   # Database operations
+│   ├── log_entry.py    # Logging model
+│   └── crew_output.py  # AI output model
+│
+├── monitoring/         # Web interface
+│   ├── dashboard.py    # FastAPI application
+│   └── templates/      # HTML templates
+│       ├── dashboard.html    # Main view
+│       └── codebase_overview.html  # System overview
+│
+├── crews/             # AI analysis teams
+│   ├── base_crew.py   # Base crew class
+│   └── analysis_crews/  # Specialized crews
+│
+└── scripts/           # Utility scripts
+    └── init_db.py     # Database initialization
+        </pre>
+    </div>
+
+    <div class="section">
+        <h2>3. Key Components Explained</h2>
+
+        <h3>3.1 Database Layer (models/)</h3>
+        <p>The database layer uses SQLAlchemy for ORM and consists of:</p>
+        <pre>
+# base.py - Database Configuration
+from sqlalchemy import create_engine
+from sqlalchemy.orm import declarative_base
+
+Base = declarative_base()
+engine = create_engine('sqlite:///code_analyzer/core/output/analyzer.db')
+
+# log_entry.py - Logging Model
+class LogEntry(Base):
+    __tablename__ = 'log_entries'
+    id = Column(Integer, primary_key=True)
+    timestamp = Column(DateTime)
+    message = Column(String)
+        </pre>
+
+        <h3>3.2 Web Dashboard (monitoring/)</h3>
+        <p>The web interface uses FastAPI and provides:</p>
+        <pre>
+# dashboard.py - Web Application
+from fastapi import FastAPI
+app = FastAPI()
+
+@app.get("/")
+async def dashboard(request: Request):
+    """Show monitoring dashboard"""
+    return templates.TemplateResponse(
+        "dashboard.html",
+        {"request": request}
+    )
+        </pre>
+
+        <h3>3.3 AI Crews (crews/)</h3>
+        <p>AI-powered analysis teams that handle different aspects of code analysis:</p>
+        <pre>
+# base_crew.py - Base Crew Class
+class BaseCrew:
+    def __init__(self, name: str, target_path: str):
+        self.name = name
+        self.target_path = target_path
+        </pre>
+    </div>
+
+    <div class="section">
+        <h2>4. How It All Works Together</h2>
+        
+        <h3>4.1 Startup Sequence</h3>
+        <ol>
+            <li>Initialize database:
+                <code>python -m code_analyzer.scripts.init_db</code></li>
+            <li>Start web server:
+                <code>uvicorn code_analyzer.monitoring.dashboard:app --reload</code></li>
+            <li>Access dashboard at:
+                <code>http://localhost:8000</code></li>
+        </ol>
+
+        <h3>4.2 Data Flow</h3>
+        <ol>
+            <li>AI crews analyze code and store results in database</li>
+            <li>Dashboard queries database for latest results</li>
+            <li>WebSocket provides real-time updates to UI</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h2>5. Next Steps</h2>
+        <p>To get the system running:</p>
+        <ol>
+            <li>Create required directories:
+                <pre>mkdir -p code_analyzer/core/output/</pre>
+            </li>
+            <li>Initialize the database:
+                <pre>python -m code_analyzer.scripts.init_db</pre>
+            </li>
+            <li>Start the monitoring dashboard:
+                <pre>uvicorn code_analyzer.monitoring.dashboard:app --reload</pre>
+            </li>
+            <li>Access the web interface at http://localhost:8000</li>
+        </ol>
+    </div>
+
+    <div class="note">
+        <strong>Note:</strong> Make sure all dependencies are installed using:
+        <pre>pip install -r requirements.txt</pre>
+    </div>
+</body>
+</html> 

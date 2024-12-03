@@ -1,0 +1,41 @@
+# DEV-NOW Runner
+name: "DEV-NOW System Runner"
+version: "1.0.0"
+priority: "CRITICAL"
+
+sequence:
+  - name: "Initialize System"
+    command: "python -m code_analyzer.scripts.init_db"
+    verify: "python -m code_analyzer.scripts.verify_system"
+
+  - name: "Deploy Components"
+    steps:
+      - name: "Command Interface"
+        yaml: "yaml_tools/implementations/dev_now/command_interface.yaml"
+      - name: "Analysis Integration"
+        yaml: "yaml_tools/implementations/dev_now/analysis_integration.yaml"
+      - name: "Workflow Automation"
+        yaml: "yaml_tools/implementations/dev_now/workflow_automation.yaml"
+
+  - name: "Start System"
+    command: "uvicorn code_analyzer.monitoring.dashboard:app --reload"
+    health_check: "http://localhost:8000/api/health"
+
+validation:
+  required_files:
+    - "code_analyzer/monitoring/templates/dev_now.html"
+    - "code_analyzer/monitoring/static/js/dev_now.js"
+    - "code_analyzer/monitoring/static/css/dev_now.css"
+    - "code_analyzer/analysis/engine.py"
+    - "code_analyzer/automation/workflow.py"
+
+  required_endpoints:
+    - "/DEV-NOW"
+    - "/api/dev-now/execute"
+    - "/ws/analysis"
+    - "/api/workflow/execute"
+
+rollback:
+  on_failure:
+    - backup_first: true
+    - restore_command: "python -m code_analyzer.scripts.rollback --all" 

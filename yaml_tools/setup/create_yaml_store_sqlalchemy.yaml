@@ -1,0 +1,47 @@
+update_plan:
+  name: "Create SQLAlchemy YAML Store"
+  description: "Set up YAML store with SQLAlchemy and Alembic"
+  priority: "HIGH"
+  
+  phases:
+    1_create_structure:
+      description: "Create SQLAlchemy models and migrations"
+      changes:
+        - type: "add_module"
+          target: "yaml_tools/store/models.py"
+          content: |
+            """SQLAlchemy models for YAML store"""
+            from sqlalchemy import Column, Integer, String, JSON, DateTime, func
+            from sqlalchemy.ext.declarative import declarative_base
+            
+            Base = declarative_base()
+            
+            class YAMLStore(Base):
+                __tablename__ = 'yaml_store'
+                
+                id = Column(Integer, primary_key=True)
+                name = Column(String, unique=True)
+                content = Column(JSON)
+                version = Column(String)
+                created_at = Column(DateTime, server_default=func.now())
+        
+        - type: "add_module"
+          target: "alembic/versions/create_yaml_store.py"
+          content: |
+            """Create YAML store table"""
+            from alembic import op
+            import sqlalchemy as sa
+            
+            def upgrade():
+                op.create_table('yaml_store',
+                    sa.Column('id', sa.Integer(), nullable=False),
+                    sa.Column('name', sa.String(), nullable=False),
+                    sa.Column('content', sa.JSON(), nullable=False),
+                    sa.Column('version', sa.String(), nullable=False),
+                    sa.Column('created_at', sa.DateTime(), server_default=sa.func.now()),
+                    sa.PrimaryKeyConstraint('id'),
+                    sa.UniqueConstraint('name')
+                )
+            
+            def downgrade():
+                op.drop_table('yaml_store')

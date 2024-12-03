@@ -1,0 +1,42 @@
+update_plan:
+    name: "Fix DEV-NOW Database"
+    version: "1.0.0"
+    priority: "CRITICAL"
+    description: "Create missing database tables and initialize stats"
+
+    phases:
+        - name: "Database Setup"
+          steps:
+            - name: "Create Tables"
+              command: "python -m code_analyzer.scripts.init_db --force"
+              verify: "python -m code_analyzer.scripts.verify_db"
+
+            - name: "Initialize Events"
+              command: "python -m code_analyzer.scripts.generate_test_data"
+              verify: "python -m code_analyzer.scripts.verify_data"
+
+        - name: "Verify Dashboard"
+          steps:
+            - name: "Check Database"
+              command: "python -m code_analyzer.scripts.verify_system"
+              
+            - name: "Test Dashboard"
+              command: "curl http://localhost:8000/DEV-NOW"
+              expected_status: 200
+
+    validation:
+        required_tables:
+            - "development_events"
+            - "log_entries"
+            - "crew_operations"
+            - "test_results"
+
+        required_data:
+            - table: "development_events"
+              min_rows: 1
+
+    rollback:
+        backup:
+            - "code_analyzer/core/output/db"
+        restore:
+            command: "python -m code_analyzer.scripts.rollback --db-only" 

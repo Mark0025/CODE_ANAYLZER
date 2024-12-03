@@ -1,0 +1,95 @@
+update_plan:
+  name: "Create Workflow Module"
+  description: "Set up workflow crews infrastructure"
+  priority: "HIGH"
+  
+  phases:
+    1_create_structure:
+      description: "Create workflow module structure"
+      changes:
+        - type: "create_directory"
+          target: "code_analyzer/crews/workflow_crews"
+          description: "Create workflow crews directory"
+        
+        - type: "add_module"
+          target: "code_analyzer/crews/workflow_crews/__init__.py"
+          content: |
+            """Workflow crews for orchestrating operations"""
+        
+        - type: "add_module"
+          target: "code_analyzer/crews/workflow_crews/run_workflow.py"
+          content: |
+            """Run workflow operations"""
+            import click
+            from pathlib import Path
+            from loguru import logger
+            from typing import Dict, Any
+            from ..base_crew import BaseCrew
+            from ..code_analysis_crew import CodeAnalysisCrew
+            from ..doc_crews.doc_updater_crew import DocUpdaterCrew
+            
+            class WorkflowRunner(BaseCrew):
+                """Runs complete documentation workflow"""
+                
+                def __init__(self, target_path: str):
+                    super().__init__("WorkflowRunner", target_path)
+                    self.analyzer = CodeAnalysisCrew(target_path)
+                    self.doc_updater = DocUpdaterCrew(target_path)
+                
+                async def run_workflow(self, spec: Dict[str, Any]) -> Dict[str, Any]:
+                    """Run complete workflow"""
+                    async with self.managed_operation():
+                        try:
+                            # 1. Run analysis
+                            analysis_results = await self.analyzer.analyze_directory(self.target_path)
+                            
+                            # 2. Generate docs
+                            doc_results = await self.doc_updater.update_docs({
+                                "analysis": analysis_results,
+                                "spec": spec
+                            })
+                            
+                            return {
+                                "status": "completed",
+                                "analysis": analysis_results,
+                                "docs": doc_results,
+                                "timestamp": self.get_timestamp()
+                            }
+                        except Exception as e:
+                            self.logger.error(f"Workflow failed: {e}")
+                            return {
+                                "status": "failed",
+                                "error": str(e),
+                                "timestamp": self.get_timestamp()
+                            }
+            
+            @click.command()
+            @click.option("--spec", required=True, help="Path to workflow spec")
+            @click.option("--verbose", is_flag=True, help="Enable verbose output")
+            @click.option("--target", default="./", help="Target directory")
+            def run_workflow(spec: str, verbose: bool, target: str):
+                """Run complete documentation workflow."""
+                try:
+                    import asyncio
+                    import yaml
+                    
+                    # Load spec
+                    with open(spec) as f:
+                        workflow_spec = yaml.safe_load(f)
+                    
+                    if verbose:
+                        logger.info(f"Running workflow: {workflow_spec['name']}")
+                    
+                    # Run workflow
+                    runner = WorkflowRunner(target)
+                    results = asyncio.run(runner.run_workflow(workflow_spec))
+                    
+                    if verbose:
+                        logger.info(f"Workflow results: {results}")
+                        
+                except Exception as e:
+                    logger.error(f"Workflow failed: {e}")
+                    raise
+            
+            if __name__ == "__main__":
+                run_workflow()

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CODE_ANALYZER Documentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 0.8em;
+        }
+        .working { background: #90EE90; }
+        .failing { background: #FFB6C1; }
+        .inprogress { background: #FFE4B5; }
+        .timestamp {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .coverage {
+            float: right;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>CODE_ANALYZER Documentation Index</h1>
+    <p class="timestamp">Last Updated: 2024-11-27 13:45 CST</p>
+    <p class="coverage">Current Coverage: 11%</p>
+
+    <h2>Current Status</h2>
+    <ul>
+        <li><a href="WHATS-WORKING/CURRENT-STATUS.md">Current Status</a> <span class="status inprogress">In Progress</span></li>
+        <li><a href="WHATS-WORKING/TEST-STATUS.md">Test Status</a> <span class="status failing">7 Failed, 7 Passed</span></li>
+        <li><a href="WHATS-WORKING/CREW-STATUS.md">Crew Status</a> <span class="status working">Active</span></li>
+    </ul>
+
+    <h2>Documentation</h2>
+    <ul>
+        <li><a href="GOALS.md">Project Goals</a></li>
+        <li><a href="GOALS-Checklist.md">Goals Checklist</a></li>
+        <li><a href="TODO.md">TODO List</a></li>
+    </ul>
+
+    <h2>Analysis Reports</h2>
+    <ul>
+        <li><a href="WHATS-WORKING/codeanalysis_status.md">Code Analysis Status</a></li>
+        <li><a href="WHATS-WORKING/crewaidocs_status.md">CrewAI Docs Status</a></li>
+        <li><a href="WHATS-WORKING/DETAILED-COMPONENTS.md">Detailed Components</a></li>
+    </ul>
+
+    <h2>Test Coverage Path</h2>
+    <p>To achieve 100% coverage:</p>
+    <ol>
+        <li>Fix current failing tests (7 failures)</li>
+        <li>Add missing test cases for:
+            <ul>
+                <li>code_analyzer/cli/ (0% coverage)</li>
+                <li>code_analyzer/crews/analyze_crews_crew.py (0% coverage)</li>
+                <li>code_analyzer/crews/clean_dir_crew.py (0% coverage)</li>
+                <li>code_analyzer/monitoring/ (0% coverage)</li>
+            </ul>
+        </li>
+        <li>Update test assertions to match new output format</li>
+    </ol>
+
+    <h2>Quick Links</h2>
+    <ul>
+        <li><a href="htmlcov/index.html">Coverage Report</a></li>
+        <li><a href="REPORT.json">Latest Report</a></li>
+        <li><a href="WHATS-WORKING/PROJECT-STRUCTURE.md">Project Structure</a></li>
+    </ul>
+</body>
+</html> 

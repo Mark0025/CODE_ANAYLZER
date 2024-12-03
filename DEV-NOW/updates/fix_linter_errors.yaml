@@ -1,0 +1,72 @@
+# Update Specification for Linter Error Fixes
+update_plan:
+  name: "Fix Linter Errors"
+  description: "Fix missing methods and imports"
+  priority: "HIGH"
+  
+  phases:
+    1_fix_imports:
+      description: "Add missing type imports"
+      changes:
+        - type: "add_imports"
+          target: "code_analyzer/crews/*.py"
+          imports:
+            - "from typing import Dict, Any, List"
+            - "import pendulum"
+    
+    2_add_timestamp:
+      description: "Add timestamp method to BaseCrew"
+      changes:
+        - type: "add_method"
+          target: "code_analyzer/crews/base_crew.py"
+          method:
+            name: "get_timestamp"
+            code: |
+              def get_timestamp(self) -> str:
+                  """Get standardized timestamp in UTC."""
+                  return pendulum.now('UTC').isoformat()
+    
+    3_error_handler_methods:
+      description: "Add error handler methods"
+      changes:
+        - type: "add_methods"
+          target: "code_analyzer/crews/error_handler_crew.py"
+          methods:
+            - name: "_analyze_code"
+              code: |
+                async def _analyze_code(self, content: str) -> Dict[str, Any]:
+                    """Analyze code for error handling needs."""
+                    # Implementation
+                    pass
+            - name: "_add_error_handling"
+              code: |
+                async def _add_error_handling(self, content: str) -> str:
+                    """Add error handling to code."""
+                    # Implementation
+                    pass
+
+  validation:
+    pre_update:
+      - command: "flake8 code_analyzer/crews/"
+        save_as: "pre_update_lint.txt"
+      - command: "pytest tests/ -v"
+        save_as: "pre_update_tests.txt"
+    
+    post_update:
+      - command: "flake8 code_analyzer/crews/"
+        compare_with: "pre_update_lint.txt"
+      - command: "pytest tests/ -v"
+        compare_with: "pre_update_tests.txt"
+      - command: "mypy code_analyzer/crews/"
+    
+    success_criteria:
+      - "No linter errors"
+      - "All tests passing"
+      - "No type errors"
+      - "No resource leaks"
+
+  rollback:
+    backup_dir: "backups/linter_fix_{timestamp}"
+    files_to_backup:
+      - "code_analyzer/crews/*.py"
+      - "code_analyzer/crews/DEV-CREWS/*.py" 
