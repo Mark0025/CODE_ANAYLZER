@@ -1,0 +1,32 @@
+# CODE_ANALYZER Tools Directory
+
+This directory contains development and maintenance tools that are not part of the core package.
+
+## Directory Structure
+
+```
+tools/
+├── setup/       # Additional setup scripts (non-critical)
+├── maintenance/ # Maintenance and cleanup scripts
+└── dev/         # Development utilities
+```
+
+## Protected Files
+
+Critical setup and configuration files are stored in the `.protected` directory at the project root.
+Do not modify files in `.protected` without proper authorization and testing.
+
+## Usage Guidelines
+
+1. Keep core functionality in the main package
+2. Use these directories for auxiliary tools only
+3. Document any new tools thoroughly
+4. Test tools in isolation before use
+
+## Adding New Tools
+
+1. Choose the appropriate directory
+2. Add clear documentation
+3. Include usage examples
+4. Add tests if applicable
+5. Update this README if needed 

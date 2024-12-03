@@ -1,1 +1,4 @@
-"""Command-line interface for code analyzer.""" 
+"""CLI package initialization."""
+from .main import cli
+
+__all__ = ['cli'] 
