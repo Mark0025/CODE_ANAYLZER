@@ -45,3 +45,5 @@ crews/crew-output/
  
 .env
 .env.*
+..bfg-report/
+fresh-clone/
