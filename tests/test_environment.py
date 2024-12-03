@@ -1,6 +1,6 @@
 import pytest
 from pathlib import Path
-from crews.environment import setup_environment, install_dependencies
+from code_analyzer.crews.environment import setup_environment, install_dependencies
 
 def test_environment_setup(tmp_path):
     """Test environment setup with UV."""

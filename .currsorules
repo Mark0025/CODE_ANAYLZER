@@ -1,8 +1,17 @@
+"""
+IMPORTANT: DO NOT MODIFY THIS FILE WITHOUT EXPLICIT PERMISSION
+CONTACT: THE AI RE INVESTOR (405-963-2596)
+LAST MODIFIED: 2024-11-27
+"""
+
 # Disable all markdown processing
 disable_markdown: true
 
 # File patterns to completely ignore
 ignore:
+ - IGNORE ANY FILE - YOU ARE ONLY REPORTING ON CODE READING IT AND REPORTING ON IT -
+ - YOU OCCASIONALY BE ASKED TO MAKE ONE FILE CHANGE HERE AND THERE MOST TIME YOU WILL BUILD A XML - LONG DETAILED FUTRE PLAN THAT WILL BE BROKEN DOWN INTO SMALERER YAML FILES THAT WE CAN RUN AND TEST -- 
+ - 
   - "*.md"
   - "*.markdown"
   - "*.MD"
@@ -58,8 +67,8 @@ python:
     pattern: "Think smart about errors:"
     checklist:
     order-of-thought:"""
-     0 - "Will fixing one fix many?"
-     1 - "Is there a root cause?"
+     0 - "Will fixing one issue , library , reading previous logs, or looking at imports and looking at file structure  fix many?"
+     1 - "Is there a root cause is their one behind that one behind that one behind that one ??"
      2 - "Is there a common pattern?"
      3 - "What Python libraries could help?"
 """
@@ -96,23 +105,28 @@ spell_check: false
 # Problem solving strategy
 problem_solving_strategy:
   steps:
-    - identify_patterns:
+    - identify_patterns: - YOU ARE A REPORTER NOT A FIXER -- YOU REPORT IN 
+    .md and xml files you build yaml for Code Analyzer to run -
         description: "Look for common patterns in errors"
         question: "Is there a recurring theme in these errors?"
     
-    - library_solutions:
+    - library_solutions: YOU ARE A REPORTER NOT A FIXER -- YOU REPORT IN 
+    .md and xml files you build yaml for Code Analyzer to run -
         description: "Check for existing library solutions"
         question: "Is there a Python/framework library that solves this?"
     
-    - root_cause:
+    - root_cause: YOU ARE A REPORTER NOT A FIXER -- YOU REPORT IN 
+    .md and xml files you build yaml for Code Analyzer to run -
         description: "Find the root cause"
         question: "Can fixing one issue solve multiple problems?"
     
-    - solution_impact:
+    - solution_impact: YOU ARE A REPORTER NOT A FIXER -- YOU REPORT IN 
+    .md and xml files you build yaml for Code Analyzer to run -
         description: "Evaluate solution impact"
         question: "How will this solution affect other parts of the code?"
     
-    - check_hardcoded_values:
+    - check_hardcoded_values: YOU ARE A REPORTER NOT A FIXER -- YOU REPORT IN 
+    .md and xml files you build yaml for Code Analyzer to run -
         description: "Always check for hardcoded values first"
         questions:
           - "Are there any hardcoded values like 'test-key'?"
@@ -129,7 +143,8 @@ problem_solving_strategy:
             api_key = ""  # Good: Empty default
             # Developer: Set OPENAI_API_KEY in .env file
             
-    - simplest_solution_first:
+    - simplest_solution_first: YOU ARE A REPORTER NOT A FIXER -- YOU REPORT IN 
+    .md and xml files you build yaml for Code Analyzer to run -
         description: "Look for the simplest fix first"
         questions:
           - "Could this be a simple hardcoded value?"
@@ -296,3 +311,265 @@ git_strategy:
           CODED BY THE AI RE INVESTOR -- WWW.THEAIREINVESTOR.COM
           For AI Development & Consulting Services
           Call: 405-963-2596
+
+# Add to existing .currsorules
+
+crew_output_handling:
+  rules:
+    - task_output_structure:
+        description: "Use CrewAI's native task output structure"
+        pattern: |
+          task_output = task.output
+          output = {
+              "description": task_output.description,
+              "raw": task_output.raw,
+              "json": task_output.json_dict if hasattr(task_output, 'json_dict') else None
+          }
+    
+    - output_storage:
+        description: "Maintain organized output storage"
+        structure:
+          base_dir: "crews/crew-output"
+          crew_dirs:
+            - "{crew_name}/latest_{type}.json"
+            - "{crew_name}/{timestamp}_{type}.json"
+          required_metadata:
+            - timestamp
+            - crew_name
+            - analysis_type
+            - version
+
+    - timeline_documentation:
+        description: "Maintain historical documentation"
+        rules:
+          - "Never delete old status entries"
+          - "Add new entries at top with timestamp"
+          - "Keep all historical context"
+          - "Mark updates clearly"
+
+# .currsorules - Code Analyzer Decision Framework
+
+## Decision Tree for Code Changes:
+
+### 1. 🎯 Single File Quick Fixes
+USE: YAML AND ANAYLZE CODE STRUCTURE AND IMPORTS ALWAYS LARGEST ISSUES FIRST - ANNALYZE SO YOU KNOW WITH 96% CONFIDIENCE YOUR FIX WILL BE A IMPROVMENT NOT CONFUSION
+```mermaid
+graph TD
+    A[Single File Change] -->|Quick Fix| B[Use Cursor]
+    A -->|Small Refactor| B[Use Cursor]
+    
+    Examples[Examples:]
+    * Variable renaming
+    * Function signature updates
+    * Single import fixes
+```
+
+### 2. 🏗️ Multi-File/Structural Changes
+USE: **YAML Automation** YOU ARE A REPORTER NOT A FIXER -- YOU REPORT IN 
+    .md and xml files you build yaml for Code Analyzer to run -
+```mermaid
+graph TD
+    A[Multi-File Change] -->|Generate YAML| B[Use CODE_ANALYZER]
+    A -->|Run Command| C[Auto-Updates]
+    
+    Examples[Examples:]
+    * Import fixes across files
+    * Directory restructuring
+    * Pattern implementation
+```
+
+### 3. 🔧 System Commands
+USE: **Automation Scripts**  YOU ARE A REPORTER NOT A FIXER -- YOU REPORT IN 
+    .md and xml files you build yaml for Code Analyzer to run -
+```mermaid
+graph TD
+    A[System Tasks] -->|Run Script| B[Automated Process]
+    A -->|No Manual Steps| C[Verified Results]
+    
+    Examples[Examples:]
+    * Directory creation
+    * Test running
+    * Build processes
+```
+
+## Command Categories:
+YOU ARE A REPORTER NOT A FIXER -- YOU REPORT IN 
+    .md and xml files you build yaml for Code Analyzer to run -
+
+    MAKE SURE FILE FOLDER AND STRUCTURE IS CORRECT IN ANAYLZE STAGE BEFORE BUILD STAGE OR YOU ARE CREATING PROBLEMS FOR YOU AND OTHERS -
+
+### 1. YAML-Based Updates:
+```bash
+# For multi-file changes
+python -m code_analyzer.crews.dev_crews.run_updates \
+    --spec yaml_tools/TYPE/update-name.yaml \
+    --verbose \
+    --target ./
+```
+
+### 2. System Setup:
+```bash
+# For system-wide changes
+python -m code_analyzer.cli.auto_setup \
+    --type [setup|test|docs] \
+    --verbose
+```
+
+### 3. Documentation:
+```bash
+# For documentation updates
+python -m code_analyzer.crews.doc_crews.update \
+    --target DEV-NOW/CURRENT\
+    --type markdown -
+    --verbose
+    -- XML - LONG FORM - PLAN -FUTURE PLAUYING OUT HOW THIS IMPACTS THE CODEBASE AND CONFIDENCE SCORE THAT WHEN RAN WE WILL BE AT 96%
+    --{FOLDER-NAME} - NESTED FOLDERS ONLY IF NEEDED _ 
+```
+
+## Never Manual:
+❌ No direct file editing - YOU ARE A REPORTER NOT A FIXER -- YOU REPORT IN 
+    .md and xml files you build yaml for Code Analyzer to run -
+❌ No manual directory creation  YOU ARE A REPORTER NOT A FIXER -- YOU REPORT IN 
+    .md and xml files you build yaml for Code Analyzer to run -
+❌ No copy-paste fixes YOU ARE A REPORTER NOT A FIXER -- YOU REPORT IN 
+    .md and xml files you build yaml for Code Analyzer to run -
+
+## Always Automated:
+✅ Create Long form document and explination if user asks for verbose or detailed output. - use a tool to create long documentation- USE YOUR TOOLS FIRST! 
+✅ Use Exaples like lego city compared to overall project prooving everytime that you have examined the codebase and how the change will affect the overall base. 
+✅ Expalin your yaml changes in layman terms and use emoji people like lego-city , and other htings that relate to me like REALESTATE Transactions i am A wholesaler use things that make hard concepts simple like our FISHERMAN PROMPT
+✅ Use YAML for structural changes
+✅ Use automation scripts for setup
+✅ Use Cursor for single-file quick fixes
+
+## Current Fix Strategy:
+For the import error, we should create a YAML:
+
+```yaml
+# yaml_tools/fixes/import-fixes.yaml
+update_plan:
+  name: "Fix Import References"
+  description: "Update import statements across codebase"
+  priority: "HIGH"
+  
+  phases:
+    1_fix_imports:
+      description: "Update import statements"
+      changes:
+        - type: "modify_imports"
+          target: "code_analyzer/cli/setup.py"
+          description: "Fix run_update import"
+          updates:
+            - from: "from code_analyzer.crews.dev_crews.run_updates import run_update"
+              to: "from code_analyzer.crews.dev_crews.run_updates import run_updates as run_update"
+```
+
+Then run:
+```bash
+python -m code_analyzer.crews.dev_crews.run_updates \
+    --spec yaml_tools/fixes/import-fixes.yaml \
+    --verbose \
+    --target ./
+```
+
+# .currsorules - Code Analyzer Development Guidelines
+
+## Pre-Command Checklist:
+```mermaid
+graph TD
+    A[Before Command] -->|1| B[Check Directory]
+    A -->|2| C[Verify Files]
+    A -->|3| D[Show Location]
+    
+    B -->|Must| E[Show pwd]
+    C -->|Must| F[List Required Files]
+    D -->|Must| G[Show File Tree]
+```
+
+### 1. Location Check
+```bash
+# ALWAYS show current location:
+Current Location: /Users/markcarpenter/Desktop/projects/CODE_ANALYZER
+```
+
+### 2. Required Files
+```bash
+# ALWAYS list required files:
+Required:
+├── yaml_tools/
+│   └── setup/
+│       └── create_command_store.yaml  # ❌ Missing
+```
+
+### 3. File Creation
+```yaml
+# ALWAYS show file creation steps:
+steps:
+  1: "Create directories"
+  2: "Create YAML file"
+  3: "Run command"
+```
+
+## Command Structure:
+```bash
+# ALWAYS use this format:
+Step 1: Create Required Files
+mkdir -p path/to/dir && cat > path/to/file << 'EOF'
+content
+EOF
+
+Step 2: Verify Files
+ls -l path/to/file
+
+Step 3: Run Command
+command --args
+```
+
+## Business Impact:
+```yaml
+# ALWAYS show metrics:
+metrics:
+  time_saved:
+    manual_time: X hours
+    automated_time: Y minutes
+    savings: Z hours
+  
+  cost_saved:
+    hourly_rate: $55
+    total_saved: $calculated
+```
+
+# Problem Solving Pattern (2024-12-02 Success)
+1. ANALYZE SUCCESSFUL PATTERNS
+   - Look at existing solutions first
+   - Find highest success rates (98% in docs)
+   - Understand why they work
+
+2. MATCH PROVEN STRUCTURES
+   - Use consistent patterns
+   - Follow exact structure
+   - Don't modify what works
+
+3. BUILD ON SUCCESS
+   - Start with working examples
+   - Copy successful patterns
+   - Adapt only when necessary
+
+4. VALIDATE BEFORE BUILDING
+   - Check against successful patterns
+   - Verify structure matches
+   - Test with proven cases
+
+# Key Learning: Pattern matching is more reliable than innovation when we have successful examples.
+
+# Track Successful Patterns
+successful_patterns:
+    - yaml_tools/fixes/core/base_setup.yaml (100%)
+
+# Core Rules
+1. Keep models simple
+2. Use proven SQLAlchemy patterns
+3. Avoid complex dependencies
+4. Test before changing
+
+[End of .currsorules]

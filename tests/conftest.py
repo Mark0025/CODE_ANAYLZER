@@ -1,17 +1,15 @@
 import pytest
-from pathlib import Path
-import os
-from dotenv import load_dotenv
-from loguru import logger
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from code_analyzer.models.base import Base
 
-# Load .env once at module level
-load_dotenv()
-
-@pytest.fixture(autouse=True)
-def load_env():
-    """Get API key from environment."""
-    api_key = os.getenv("OPENAI_API_KEY")
-    if not api_key:
-        pytest.skip("OPENAI_API_KEY not found in environment")
-    return api_key
-
+@pytest.fixture
+async def db_session():
+    """Provide test database session."""
+    engine = create_engine('sqlite:///test.db')
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    Base.metadata.create_all(engine)
+    yield session
+    session.close()
+    Base.metadata.drop_all(engine)

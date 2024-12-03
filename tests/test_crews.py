@@ -2,7 +2,7 @@
 import pytest
 from pathlib import Path
 from loguru import logger
-from crews.code_analysis_crew import CodeAnalysisCrew
+from code_analyzer.crews.code_analysis_crew import CodeAnalysisCrew
 from openai import OpenAI
 
 @pytest.mark.asyncio
