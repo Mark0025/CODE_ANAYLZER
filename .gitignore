@@ -43,3 +43,5 @@ tests/Logs/
 crews/crew-output/
 
  
+.env
+.env.*
