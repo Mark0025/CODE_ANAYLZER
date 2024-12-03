@@ -1,7 +1,4 @@
-"""
-CODE_ANALYZER package for analyzing code directories.
-"""
-from .analyzer import analyze_directory
+"""Code analyzer package."""
+from code_analyzer.models import Base, LogEntry, init_db, get_session
 
-__version__ = "0.1.0"
-__all__ = ['analyze_directory'] 
+__all__ = ['Base', 'LogEntry', 'init_db', 'get_session'] 
