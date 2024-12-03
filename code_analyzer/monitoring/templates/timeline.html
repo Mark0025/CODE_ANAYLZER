@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Timeline - CODE_ANALYZER{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1>Development Timeline</h1>
+        
+        <div class="timeline">
+            {% for event in events %}
+            <div class="timeline-item">
+                <div class="d-flex justify-content-between">
+                    <h6>{{ event.message }}</h6>
+                    <small class="text-muted">{{ event.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+                </div>
+                
+                <div class="mt-2">
+                    <span class="badge bg-{{ event.level|lower }}">{{ event.level }}</span>
+                    {% if event.crew_name %}
+                    <span class="badge bg-secondary">{{ event.crew_name }}</span>
+                    {% endif %}
+                </div>
+                
+                {% if event.extra_data %}
+                <div class="mt-2">
+                    <pre><code>{{ event.extra_data|tojson(indent=2) }}</code></pre>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

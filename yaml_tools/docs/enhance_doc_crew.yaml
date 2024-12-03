@@ -1,0 +1,140 @@
+update_plan:
+  name: "Enhance Documentation System"
+  description: "Add DEV-NOW and AI features to existing DocUpdaterCrew"
+  priority: "HIGH"
+  
+  phases:
+    1_add_dev_now:
+      description: "Add DEV-NOW tracking capabilities"
+      changes:
+        - type: "add_method"
+          target: "code_analyzer/crews/doc_crews/doc_updater_crew.py"
+          content: |
+            async def analyze_dev_now_state(self) -> Dict[str, Any]:
+                """Analyze DEV-NOW directory state and progress"""
+                async with self.managed_operation():
+                    try:
+                        dev_now = Path("DEV-NOW")
+                        results = {
+                            "current_state": await self._analyze_directory(dev_now / "current-state"),
+                            "completed": await self._analyze_directory(dev_now / "completed"),
+                            "future": await self._analyze_directory(dev_now / "future"),
+                            "timestamp": self.get_timestamp()
+                        }
+                        return {
+                            "status": "completed",
+                            "results": results
+                        }
+                    except Exception as e:
+                        self.logger.error(f"DEV-NOW analysis failed: {e}")
+                        return {
+                            "status": "failed",
+                            "error": str(e)
+                        }
+            
+            async def _analyze_directory(self, path: Path) -> List[Dict[str, Any]]:
+                """Analyze contents of a DEV-NOW directory"""
+                if not path.exists():
+                    return []
+                
+                files = []
+                for file in path.glob("*.md"):
+                    content = await self.read_file(file)
+                    files.append({
+                        "name": file.name,
+                        "type": self._determine_type(content),
+                        "status": self._determine_status(content),
+                        "last_modified": file.stat().st_mtime
+                    })
+                return files
+    
+    2_add_ai_capabilities:
+      description: "Add AI analysis features"
+      changes:
+        - type: "add_method"
+          target: "code_analyzer/crews/doc_crews/doc_updater_crew.py"
+          content: |
+            async def analyze_with_ai(self, content: str) -> Dict[str, Any]:
+                """Use CrewAI to analyze documentation"""
+                async with self.managed_operation():
+                    try:
+                        # Create specialized agents
+                        doc_analyzer = Agent(
+                            role="Documentation Analyzer",
+                            goal="Analyze documentation quality and completeness",
+                            backstory="Expert technical writer and documentation specialist"
+                        )
+                        
+                        structure_analyzer = Agent(
+                            role="Structure Analyzer",
+                            goal="Analyze documentation structure and organization",
+                            backstory="Expert in documentation architecture"
+                        )
+                        
+                        # Create tasks
+                        analysis_task = Task(
+                            description=f"Analyze documentation content: {content[:100]}...",
+                            agent=doc_analyzer
+                        )
+                        
+                        structure_task = Task(
+                            description="Analyze documentation structure",
+                            agent=structure_analyzer
+                        )
+                        
+                        # Create crew
+                        crew = Crew(
+                            agents=[doc_analyzer, structure_analyzer],
+                            tasks=[analysis_task, structure_task],
+                            verbose=True
+                        )
+                        
+                        # Run analysis
+                        results = await crew.kickoff()
+                        
+                        return {
+                            "status": "completed",
+                            "analysis": results,
+                            "timestamp": self.get_timestamp()
+                        }
+                    except Exception as e:
+                        self.logger.error(f"AI analysis failed: {e}")
+                        return {
+                            "status": "failed",
+                            "error": str(e)
+                        }
+    
+    3_integrate_features:
+      description: "Integrate new features into main documentation flow"
+      changes:
+        - type: "add_method"  # Changed from modify_method
+          target: "code_analyzer/crews/doc_crews/doc_updater_crew.py"
+          content: |  # Changed structure to match other methods
+            async def update_docs(self, update_spec: Dict[str, Any]) -> Dict[str, Any]:
+                """Enhanced documentation update with AI and DEV-NOW awareness"""
+                async with self.managed_operation():
+                    try:
+                        # Get DEV-NOW state
+                        dev_now_state = await self.analyze_dev_now_state()
+                        
+                        # Generate documentation
+                        docs = await self._generate_documentation(update_spec)
+                        
+                        # Analyze with AI
+                        ai_analysis = await self.analyze_with_ai(str(docs))
+                        
+                        # Combine results
+                        return {
+                            "status": "completed",
+                            "documentation": docs,
+                            "dev_now_state": dev_now_state,
+                            "ai_analysis": ai_analysis,
+                            "timestamp": self.get_timestamp()
+                        }
+                    except Exception as e:
+                        self.logger.error(f"Documentation update failed: {e}")
+                        return {
+                            "status": "failed",
+                            "error": str(e),
+                            "timestamp": self.get_timestamp()
+                        }

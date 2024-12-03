@@ -1,0 +1,49 @@
+#!/usr/bin/env python3
+"""
+IMPORTANT: DO NOT MODIFY WITHOUT PERMISSION
+Contact: THE AI RE INVESTOR (405-963-2596)
+"""
+import click
+from pathlib import Path
+from loguru import logger
+import sys
+
+# Add project root to path
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+
+@click.group()
+def cli():
+    """CODE_ANALYZER Analysis Tools"""
+    pass
+
+@cli.command()
+@click.option('--output', '-o', default='DEV-MAN-CREW/ANALYSIS-RESULTS',
+              help='Output directory for analysis results')
+def analyze(output):
+    """Run full codebase analysis."""
+    try:
+        from code_analyzer.crews.analyze_crews_crew import AnalyzeCrewsCrew
+        import asyncio
+        
+        # Initialize crew
+        analyzer = AnalyzeCrewsCrew("./")
+        
+        # Run analysis
+        results = asyncio.run(analyzer.analyze_ecosystem())
+        
+        # Save results
+        output_path = Path(output)
+        output_path.mkdir(exist_ok=True, parents=True)
+        
+        with open(output_path / "FULL-ANALYSIS.md", 'w') as f:
+            f.write(results["analysis"])
+            
+        logger.success(f"Analysis complete! Results saved to {output_path}")
+        
+    except Exception as e:
+        logger.error(f"Analysis failed: {e}")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    cli() 

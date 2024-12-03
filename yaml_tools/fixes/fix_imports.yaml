@@ -1,0 +1,15 @@
+update_plan:           # <-- Add the wrapper
+  name: "Fix Import Paths"
+  description: "Fix model import paths"
+  priority: "CRITICAL"
+
+  phases:
+    1_fix_imports:
+      description: "Update import statements"
+      changes:
+        - type: "modify_file"
+          target: "code_analyzer/cli/commands/db.py"
+          updates:
+            - type: "replace"
+              old: "from code_analyzer.crews.models.base import init_db"
+              new: "from code_analyzer.models.base import init_db"

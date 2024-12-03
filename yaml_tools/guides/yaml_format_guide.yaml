@@ -1,0 +1,135 @@
+# CODE_ANALYZER YAML Format Guide
+# Based on successful implementations from our logs
+
+# Root Structure (Required)
+update_plan:
+    # Basic Information (Required)
+    name: "Your Update Name"
+    version: "1.0.0"
+    priority: "HIGH|MEDIUM|LOW"
+    description: "What this update does"
+
+    # Steps Definition (Required)
+    steps:
+        # Basic Step
+        - name: "Step Name"
+          command: "python -m your.command"
+          verify: "python -m your.verification"
+
+        # Step with Substeps
+        - name: "Complex Step"
+          substeps:
+            - name: "Substep 1"
+              command: "command1"
+            - name: "Substep 2"
+              command: "command2"
+
+        # Step with YAML Reference
+        - name: "YAML Step"
+          yaml: "path/to/another.yaml"
+          validate: true
+
+    # Validation (Optional)
+    validation:
+        required_files:
+            - "path/to/required/file1"
+            - "path/to/required/file2"
+        
+        required_endpoints:
+            - "/api/endpoint1"
+            - "/api/endpoint2"
+
+    # Rollback (Optional but Recommended)
+    rollback:
+        backup:
+            - "path/to/backup/file1"
+            - "path/to/backup/file2"
+        restore:
+            command: "python -m rollback.command"
+
+# Real Examples from Logs
+
+## Example 1: Simple Update
+update_plan:
+    name: "Add New Endpoint"
+    version: "1.0.0"
+    priority: "HIGH"
+    steps:
+        - name: "Add Route"
+          command: "python -m code_analyzer.scripts.add_route"
+          verify: "python -m code_analyzer.scripts.verify_route"
+
+## Example 2: Complex Update (From Successful Log)
+update_plan:
+    name: "Integrate Analysis System"
+    version: "2.0.0"
+    priority: "CRITICAL"
+    steps:
+        - name: "Backup Current System"
+          command: "python -m code_analyzer.scripts.backup"
+        
+        - name: "Deploy Components"
+          substeps:
+            - name: "Deploy Frontend"
+              yaml: "frontend_update.yaml"
+            - name: "Deploy Backend"
+              yaml: "backend_update.yaml"
+        
+        - name: "Verify Integration"
+          command: "python -m code_analyzer.scripts.verify_integration"
+
+## Example 3: Documentation Update (From Logs)
+update_plan:
+    name: "Update Documentation"
+    version: "1.1.0"
+    priority: "MEDIUM"
+    steps:
+        - name: "Generate Docs"
+          command: "python -m code_analyzer.scripts.generate_docs"
+        
+        - name: "Verify Links"
+          command: "python -m code_analyzer.scripts.verify_links"
+        
+        - name: "Deploy"
+          command: "python -m code_analyzer.scripts.deploy_docs"
+
+# Common Patterns (From Success Logs)
+
+## Pattern 1: System Changes
+steps:
+    - name: "Backup"
+      command: "backup_command"
+    - name: "Change"
+      command: "change_command"
+    - name: "Verify"
+      command: "verify_command"
+
+## Pattern 2: Component Updates
+steps:
+    - name: "Update Components"
+      substeps:
+        - name: "Component 1"
+          yaml: "component1.yaml"
+        - name: "Component 2"
+          yaml: "component2.yaml"
+
+## Pattern 3: Documentation
+steps:
+    - name: "Update Docs"
+      substeps:
+        - name: "Generate"
+          command: "generate_command"
+        - name: "Verify"
+          command: "verify_command"
+        - name: "Deploy"
+          command: "deploy_command"
+
+# Best Practices (From Success Logs)
+# 1. Always include version
+# 2. Always include validation
+# 3. Always include rollback
+# 4. Use substeps for complex operations
+# 5. Reference other YAMLs for modularity
+# 6. Include verification steps
+# 7. Follow naming conventions
+# 8. Document dependencies 

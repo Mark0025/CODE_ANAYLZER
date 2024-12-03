@@ -1,0 +1,15 @@
+update_plan:
+    name: "Test Format"
+    version: "1.0.0"
+    priority: "HIGH"
+    description: "Test YAML format"
+
+    phases:
+        test_phase:
+            description: "Test phase"
+            changes:
+                - "Test change 1"  # Must be a list
+                - "Test change 2"
+            steps:
+                - name: "Test step"
+                  command: "echo 'test'" 

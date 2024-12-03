@@ -1,0 +1,19 @@
+update_plan:
+  name: "Update Dependencies"
+  description: "Add missing monitoring dependencies"
+  priority: "HIGH"
+  
+  phases:
+    1_update_pyproject:
+      description: "Update pyproject.toml"
+      changes:
+        - type: "modify_file"
+          target: "pyproject.toml"
+          updates:
+            - type: "add_dependencies"
+              dependencies: [
+                "fastapi>=0.115.0",
+                "uvicorn>=0.32.0",
+                "jinja2>=3.1.0",
+                "websockets>=12.0"
+              ] 

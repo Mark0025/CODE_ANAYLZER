@@ -1,0 +1,28 @@
+update_plan:
+  name: "{pattern_name} Pattern Implementation"
+  description: "Implement or update {pattern_name} pattern"
+  priority: "HIGH"
+  
+  phases:
+    1_pattern_analysis:
+      description: "Analyze existing pattern implementation"
+      changes:
+        - type: "analyze_pattern"
+          target: "{target_file}"
+          description: "Analyze current pattern usage"
+    
+    2_pattern_implementation:
+      description: "Implement or update pattern"
+      changes:
+        - type: "add_method"
+          target: "{target_file}"
+          description: "Add pattern implementation"
+          content: |
+            {pattern_implementation}
+    
+    3_pattern_documentation:
+      description: "Update pattern documentation"
+      changes:
+        - type: "update_docs"
+          target: "docs/patterns/{pattern_name}.md"
+          description: "Document pattern usage" 

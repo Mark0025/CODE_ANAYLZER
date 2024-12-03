@@ -1,0 +1,125 @@
+update_plan:
+  name: "Workflow Integration Implementation"
+  description: "Create automated workflow system using existing tools"
+  priority: "HIGH"
+  
+  phases:
+    1_yaml_generator:
+      description: "Create YAML spec generator using our analysis tools"
+      changes:
+        - type: "add_module"
+          target: "code_analyzer/crews/workflow_crews/yaml_generator.py"
+          content: |
+            """
+            YAML Specification Generator using CodeAnalysisCrew
+            """
+            from typing import Dict, Any
+            from pathlib import Path
+            import yaml
+            from ..base_crew import BaseCrew
+            from ..code_analysis_crew import CodeAnalysisCrew
+            
+            class YAMLSpecGenerator(BaseCrew):
+                """Generates YAML specs from code analysis"""
+                
+                def __init__(self, target_path: str):
+                    super().__init__("YAMLGenerator", target_path)
+                    self.analyzer = CodeAnalysisCrew(target_path)
+                
+                async def generate_spec(self, analysis_results: Dict[str, Any]) -> Dict[str, Any]:
+                    """Generate YAML specification from analysis results"""
+                    return {
+                        "update_plan": {
+                            "name": self._generate_name(analysis_results),
+                            "description": self._generate_description(analysis_results),
+                            "priority": "HIGH",
+                            "phases": await self._create_phases(analysis_results)
+                        }
+                    }
+                
+                def _generate_name(self, results: Dict[str, Any]) -> str:
+                    """Generate update plan name based on analysis"""
+                    return f"Update Plan for {results.get('project_name', 'Project')}"
+                
+                def _generate_description(self, results: Dict[str, Any]) -> str:
+                    """Generate description based on analysis findings"""
+                    return f"Generated from analysis on {self.get_timestamp()}"
+                
+                async def _create_phases(self, results: Dict[str, Any]) -> Dict[str, Any]:
+                    """Create phases based on analysis results"""
+                    phases = {}
+                    
+                    # Add pattern detection phase if needed
+                    if results.get("patterns"):
+                        phases["1_pattern_updates"] = {
+                            "description": "Update pattern implementations",
+                            "changes": self._create_pattern_changes(results["patterns"])
+                        }
+                    
+                    # Add complexity fixes if needed
+                    if results.get("complexity_issues"):
+                        phases["2_complexity_fixes"] = {
+                            "description": "Fix complexity issues",
+                            "changes": self._create_complexity_changes(results["complexity_issues"])
+                        }
+                    
+                    return phases
+
+    2_workflow_manager:
+      description: "Create workflow manager to integrate tools"
+      changes:
+        - type: "add_module"
+          target: "code_analyzer/crews/workflow_crews/workflow_manager.py"
+          content: |
+            """
+            Workflow Manager for tool integration
+            """
+            from typing import Dict, Any
+            from pathlib import Path
+            from ..base_crew import BaseCrew
+            from ..code_analysis_crew import CodeAnalysisCrew
+            from ..dev_crews.dev_updater_crew import DevUpdaterCrew
+            from ..doc_crews.doc_updater_crew import DocUpdaterCrew
+            from .yaml_generator import YAMLSpecGenerator
+            
+            class WorkflowManager(BaseCrew):
+                """Manages the integrated workflow of all crews"""
+                
+                def __init__(self, target_path: str):
+                    super().__init__("WorkflowManager", target_path)
+                    self.analyzer = CodeAnalysisCrew(target_path)
+                    self.generator = YAMLSpecGenerator(target_path)
+                    self.updater = DevUpdaterCrew(target_path)
+                    self.documenter = DocUpdaterCrew(target_path)
+                
+                async def run_workflow(self) -> Dict[str, Any]:
+                    """Run the complete workflow"""
+                    async with self.managed_operation():
+                        try:
+                            # 1. Analyze code
+                            analysis = await self.analyzer.analyze_codebase()
+                            
+                            # 2. Generate YAML
+                            yaml_spec = await self.generator.generate_spec(analysis)
+                            
+                            # 3. Run updates
+                            updates = await self.updater.execute_updates(yaml_spec)
+                            
+                            # 4. Update docs
+                            docs = await self.documenter.update_docs(updates)
+                            
+                            return {
+                                "status": "completed",
+                                "analysis": analysis,
+                                "updates": updates,
+                                "docs": docs,
+                                "timestamp": self.get_timestamp()
+                            }
+                            
+                        except Exception as e:
+                            self.logger.error(f"Workflow failed: {e}")
+                            return {
+                                "status": "failed",
+                                "error": str(e),
+                                "timestamp": self.get_timestamp()
+                            } 

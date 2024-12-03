@@ -1,0 +1,54 @@
+# Fabric AI Integration YAML
+update_plan:
+  name: "Fabric Integration"
+  description: "Integrate Fabric AI capabilities"
+  priority: "HIGH"
+  
+  phases:
+    1_create_models:
+      description: "Create Fabric models"
+      changes:
+        - type: "create_module"
+          target: "code_analyzer/models/fabric_models.py"
+          content: |
+            """Fabric integration models."""
+            from sqlalchemy import Column, String, JSON, DateTime, Float, Integer, Boolean, func
+            from uuid import uuid4
+            from .base import Base
+            
+            class FabricResponse(Base):
+                """Stores Fabric AI responses and metrics."""
+                __tablename__ = 'fabric_responses'
+                
+                id = Column(String, primary_key=True, default=lambda: str(uuid4()))
+                pattern = Column(String, index=True)
+                context = Column(JSON)
+                response = Column(JSON)
+                success = Column(Boolean, default=True)
+                created_at = Column(DateTime, server_default=func.now())
+    
+    2_create_client:
+      description: "Create Fabric client"
+      changes:
+        - type: "create_module"
+          target: "code_analyzer/integrations/fabric/client.py"
+          content: |
+            """Fabric AI client integration."""
+            import os
+            from typing import Dict, Any
+            from pathlib import Path
+            import httpx
+            from loguru import logger
+            from code_analyzer.models.fabric_models import FabricResponse
+            from code_analyzer.models.db_manager import DatabaseManager
+            
+            class FabricClient:
+                """Client for Fabric AI API integration."""
+                
+                def __init__(self):
+                    self.base_url = os.getenv("FABRIC_API_URL", "https://api.fabric.ai")
+                    self.api_key = os.getenv("FABRIC_API_KEY")
+                    self.client = httpx.AsyncClient(
+                        headers={"Authorization": f"Bearer {self.api_key}"}
+                    )
+                    self.db = DatabaseManager() 

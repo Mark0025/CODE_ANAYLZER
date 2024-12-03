@@ -1,0 +1,27 @@
+update_plan:
+  name: "Command History Implementation"
+  description: "Add command execution history and analytics"
+  priority: "HIGH"
+  
+  phases:
+    1_create_structure:
+      description: "Set up command history tracking"
+      changes:
+        - type: "add_module"
+          target: "yaml_tools/store/history_models.py"
+          content: |
+            """Command history tracking models"""
+            from sqlalchemy import Column, Integer, String, JSON, DateTime, ForeignKey, func
+            from sqlalchemy.ext.declarative import declarative_base
+            
+            Base = declarative_base()
+            
+            class CommandHistory(Base):
+                __tablename__ = "command_history"
+                
+                id = Column(Integer, primary_key=True)
+                command_id = Column(Integer, ForeignKey("command_store.id"))
+                execution_time = Column(DateTime, server_default=func.now())
+                status = Column(String)
+                output = Column(JSON)
+                metrics = Column(JSON)

@@ -1,0 +1,142 @@
+update_plan:
+  name: "AI Documentation System"
+  description: "Create CrewAI-powered documentation system"
+  priority: "HIGH"
+  
+  phases:
+    1_create_structure:
+      description: "Set up AI documentation system"
+      changes:
+        - type: "add_module"
+          target: "code_analyzer/crews/doc_crews/ai_doc_crew.py"
+          description: "AI-powered documentation crew"
+          content: |
+            """
+            CrewAI-powered documentation system
+            """
+            from typing import Dict, Any, List
+            from pathlib import Path
+            from crewai import Agent, Task, Crew
+            from ..base_crew import BaseCrew
+            
+            class AIDocCrew(BaseCrew):
+                """AI-powered documentation generation"""
+                
+                def __init__(self, target_path: str):
+                    super().__init__("AIDoc", target_path)
+                    self.excluded_patterns = [
+                        "*.env",
+                        "*.pyc",
+                        "__pycache__",
+                        "*.egg-info",
+                        "dist/*",
+                        "build/*",
+                        ".git/*",
+                        "*.db",
+                        "*.log"
+                    ]
+                
+                async def analyze_and_document(self) -> Dict[str, Any]:
+                    """Generate comprehensive documentation"""
+                    async with self.managed_operation():
+                        try:
+                            # Create specialized agents
+                            code_analyzer = Agent(
+                                role="Code Analyzer",
+                                goal="Analyze code structure and patterns",
+                                backstory="Expert at understanding Python codebases"
+                            )
+                            
+                            doc_writer = Agent(
+                                role="Documentation Writer",
+                                goal="Create clear, comprehensive documentation",
+                                backstory="Expert technical writer"
+                            )
+                            
+                            state_tracker = Agent(
+                                role="State Tracker",
+                                goal="Track project state and progress",
+                                backstory="Expert project manager"
+                            )
+                            
+                            # Create tasks
+                            analyze_task = Task(
+                                description="Analyze entire codebase structure",
+                                agent=code_analyzer
+                            )
+                            
+                            document_task = Task(
+                                description="Generate comprehensive documentation",
+                                agent=doc_writer
+                            )
+                            
+                            track_task = Task(
+                                description="Track and document project state",
+                                agent=state_tracker
+                            )
+                            
+                            # Create crew
+                            crew = Crew(
+                                agents=[code_analyzer, doc_writer, state_tracker],
+                                tasks=[analyze_task, document_task, track_task],
+                                verbose=True
+                            )
+                            
+                            # Run analysis
+                            results = await crew.kickoff()
+                            
+                            return {
+                                "status": "completed",
+                                "results": results,
+                                "timestamp": self.get_timestamp()
+                            }
+                            
+                        except Exception as e:
+                            self.logger.error(f"Documentation failed: {e}")
+                            return {
+                                "status": "failed",
+                                "error": str(e),
+                                "timestamp": self.get_timestamp()
+                            }
+                
+                async def _get_files_to_analyze(self) -> List[Path]:
+                    """Get list of files to analyze, excluding sensitive ones"""
+                    files = []
+                    for ext in ["*.py", "*.md", "*.yaml", "*.json", "*.sh"]:
+                        files.extend(Path(self.target_path).rglob(ext))
+                    
+                    # Filter out excluded patterns
+                    return [f for f in files if not any(
+                        f.match(pattern) for pattern in self.excluded_patterns
+                    )]
+    
+    2_create_cli:
+      description: "Create CLI interface"
+      changes:
+        - type: "add_module"
+          target: "code_analyzer/crews/doc_crews/run_ai_docs.py"
+          description: "CLI for AI documentation"
+          content: |
+            """Run AI documentation system"""
+            import click
+            from pathlib import Path
+            from loguru import logger
+            from .ai_doc_crew import AIDocCrew
+            
+            @click.command()
+            @click.option("--target", default="./", help="Target directory")
+            @click.option("--verbose", is_flag=True, help="Verbose output")
+            def run_ai_docs(target: str, verbose: bool):
+                """Generate AI-powered documentation."""
+                try:
+                    import asyncio
+                    crew = AIDocCrew(target)
+                    results = asyncio.run(crew.analyze_and_document())
+                    if verbose:
+                        click.echo(f"Documentation results: {results}")
+                except Exception as e:
+                    logger.error(f"Documentation failed: {e}")
+                    raise
+            
+            if __name__ == "__main__":
+                run_ai_docs()

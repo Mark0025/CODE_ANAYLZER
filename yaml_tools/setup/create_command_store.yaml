@@ -1,0 +1,27 @@
+update_plan:
+  name: "Command Store Implementation"
+  description: "Set up command storage and validation"
+  priority: "HIGH"
+  
+  phases:
+    1_create_structure:
+      description: "Create command store components"
+      changes:
+        - type: "add_module"
+          target: "yaml_tools/store/command_models.py"
+          content: |
+            """SQLAlchemy models for command store"""
+            from sqlalchemy import Column, Integer, String, DateTime, func
+            from sqlalchemy.ext.declarative import declarative_base
+            
+            Base = declarative_base()
+            
+            class CommandStore(Base):
+                __tablename__ = 'command_store'
+                
+                id = Column(Integer, primary_key=True)
+                name = Column(String, unique=True)
+                command = Column(String)
+                status = Column(String)
+                last_verified = Column(DateTime, server_default=func.now())
+                success_pattern = Column(String)

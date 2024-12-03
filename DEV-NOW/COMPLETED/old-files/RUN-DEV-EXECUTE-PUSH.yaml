@@ -1,0 +1,77 @@
+# DEV-NOW/CURRENT/RUN-DEV-EXECUTE-PUSH.yaml
+update_plan:
+    name: "DEV-NOW Launch System"
+    version: "1.0.0"
+    priority: "CRITICAL"
+    description: "Single command to launch and interface with DEV-NOW"
+
+    phases:
+        1_database_setup:
+            description: "Initialize database and tables"
+            changes:
+                - type: "modify_system"
+                  target: "database/tables"
+                  actions:
+                    - create_table:
+                        name: "development_events"
+                        columns:
+                            - "id INTEGER PRIMARY KEY"
+                            - "timestamp DATETIME"
+                            - "event_type TEXT"
+                            - "title TEXT"
+                            - "description TEXT"
+                            - "event_data JSON"
+                    - run_command:
+                        name: "init_db"
+                        command: "python -m code_analyzer.scripts.init_db --force"
+                        verify: "python -m code_analyzer.scripts.verify_db"
+
+        2_map_loading:
+            description: "Load and index components"
+            changes:
+                - type: "modify_system"
+                  target: "code_analyzer/maps"
+                  actions:
+                    - load_map:
+                        name: "city_index"
+                        path: "yaml_tools/implementations/dev_now/city_index.yaml"
+                    - index_components:
+                        paths:
+                            - "code_analyzer/crews"
+                            - "code_analyzer/scripts"
+                            - "yaml_tools"
+
+        3_interface_setup:
+            description: "Create user interface"
+            changes:
+                - type: "modify_system"
+                  target: "code_analyzer/interface"
+                  actions:
+                    - create_file:
+                        path: "code_analyzer/cli/dev_now.sh"
+                        content: |
+                            #!/bin/bash
+                            case "$1" in
+                                "start") uvicorn code_analyzer.monitoring.dashboard:app --reload ;;
+                                "analyze") python -m code_analyzer.scripts.analyze_history ;;
+                                *) echo "Usage: dev_now [start|analyze]" ;;
+                            esac
+                    - verify_endpoints:
+                        urls:
+                            - "http://localhost:8000/DEV-NOW"
+                            - "http://localhost:8000/api/health"
+
+    validation:
+        required_files:
+            - "code_analyzer/cli/dev_now.sh"
+            - "code_analyzer/monitoring/templates/dev_now.html"
+        required_tables:
+            - "development_events"
+            - "success_patterns"
+            - "yaml_executions"
+
+    monitoring:
+        track:
+            - "command_usage"
+            - "yaml_success"
+            - "interface_health"

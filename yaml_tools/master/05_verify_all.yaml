@@ -1,0 +1,66 @@
+# Verification Suite YAML
+update_plan:
+  name: "System Verification"
+  description: "Verify all components working"
+  priority: "HIGH"
+  
+  phases:
+    1_verify_database:
+      description: "Verify database setup"
+      changes:
+        - type: "run_python"
+          module: "code_analyzer.models.base"
+          function: "verify_tables"
+          args:
+            required_tables: [
+              "api_calls",
+              "analysis_runs",
+              "fabric_responses"
+            ]
+    
+    2_verify_monitoring:
+      description: "Verify monitoring system"
+      changes:
+        - type: "run_python"
+          module: "code_analyzer.monitoring.dashboard"
+          function: "verify_dashboard"
+          args:
+            check_endpoints: [
+              "/",
+              "/metrics",
+              "/ws"
+            ]
+    
+    3_verify_fabric:
+      description: "Verify Fabric integration"
+      changes:
+        - type: "run_python"
+          module: "code_analyzer.integrations.fabric.client"
+          function: "verify_connection"
+          args:
+            test_pattern: "improve_prompt"
+            test_context: {
+              "type": "test",
+              "content": "Test connection"
+            }
+    
+    4_generate_report:
+      description: "Generate verification report"
+      changes:
+        - type: "create_file"
+          target: "verification_report.md"
+          content: |
+            # System Verification Report
+            Generated: {timestamp}
+            
+            ## Components Verified:
+            - Database: {database_status}
+            - Monitoring: {monitoring_status}
+            - Fabric Integration: {fabric_status}
+            
+            ## Test Results:
+            - Unit Tests: {unit_test_results}
+            - Integration Tests: {integration_test_results}
+            
+            ## Next Steps:
+            {next_steps} 

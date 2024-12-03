@@ -1,0 +1,83 @@
+# Analysis Integration Component
+update_plan:
+    name: "DEV-NOW Analysis Integration"
+    version: "1.0.0"
+    priority: "HIGH"
+    description: "Real-time code analysis integration"
+
+    phases:
+        - name: "Analysis Engine"
+          steps:
+            - name: "Create Engine"
+              file: "code_analyzer/analysis/engine.py"
+              content: |
+                class AnalysisEngine:
+                    def __init__(self):
+                        self.watchers = []
+                        self.metrics = {}
+                    
+                    async def analyze_file(self, file_path: str):
+                        result = await self._run_analysis(file_path)
+                        self.metrics[file_path] = result
+                        return result
+
+        - name: "WebSocket Integration"
+          steps:
+            - name: "Add WebSocket Handler"
+              routes:
+                - path: "/ws/analysis"
+                  handler: "analysis_feed"
+                  code: |
+                    @app.websocket("/ws/analysis")
+                    async def analysis_feed(websocket: WebSocket):
+                        await websocket.accept()
+                        engine = AnalysisEngine()
+                        while True:
+                            analysis = await engine.get_latest()
+                            await websocket.send_json(analysis)
+
+        - name: "Frontend Integration"
+          steps:
+            - name: "Add Analysis Panel"
+              template:
+                file: "code_analyzer/monitoring/templates/dev_now.html"
+                section: "analysis_panel"
+                content: |
+                    <div class="analysis-panel">
+                        <div class="metrics"></div>
+                        <div class="alerts"></div>
+                    </div>
+
+            - name: "Add Analysis JavaScript"
+              file: "code_analyzer/monitoring/static/js/analysis.js"
+              content: |
+                class AnalysisViewer {
+                    constructor() {
+                        this.ws = new WebSocket('ws://localhost:8000/ws/analysis');
+                        this.setupHandlers();
+                    }
+                }
+
+    validation:
+        required_files:
+            - "code_analyzer/analysis/engine.py"
+            - "code_analyzer/monitoring/static/js/analysis.js"
+        
+        required_endpoints:
+            - "/ws/analysis"
+            - "/api/analysis/status"
+
+        required_dependencies:
+            python:
+                - "fastapi>=0.68.0"
+                - "websockets>=10.0"
+            javascript:
+                - "chart.js>=3.5.0"
+
+    rollback:
+        backup:
+            - "code_analyzer/analysis"
+            - "code_analyzer/monitoring/static/js/analysis.js"
+        restore:
+            command: "git checkout HEAD -- code_analyzer/analysis/"
+            verify: "python -m code_analyzer.scripts.verify_analysis"

@@ -1,0 +1,120 @@
+update_plan:
+    name: "Core Dependencies Setup"
+    version: "1.0.0"
+    priority: "CRITICAL"
+    description: "Setup core dependencies and logging"
+
+    phases:
+        1_dependencies:
+            description: "Install and verify core dependencies"
+            changes:
+                - type: "modify_system"
+                  target: "requirements"
+                  actions:
+                    - add_dependencies:
+                        packages:
+                            - "sqlalchemy>=2.0.0"
+                            - "pendulum>=2.0.0"  # Time handling
+                            - "loguru>=0.7.0"    # Logging
+                            - "pandas>=2.0.0"    # Data handling
+                            - "pydantic>=2.0.0"  # Data validation
+
+        2_core_setup:
+            description: "Setup core functionality"
+            changes:
+                - type: "modify_system"
+                  target: "code_analyzer/core"
+                  actions:
+                    - create_file:
+                        path: "database.py"
+                        content: |
+                            from sqlalchemy import create_engine, text
+                            from sqlalchemy.orm import sessionmaker
+                            from loguru import logger
+                            import pendulum
+                            import os
+
+                            DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:///code_analyzer.db')
+                            engine = create_engine(DATABASE_URL)
+                            SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+                            def get_session():
+                                """Get database session."""
+                                session = SessionLocal()
+                                try:
+                                    # Verify connection with proper text() usage
+                                    session.execute(text("SELECT 1"))
+                                    return session
+                                except Exception as e:
+                                    logger.error(f"Database connection failed: {e}")
+                                    session.close()
+                                    raise
+
+                            def get_timestamp():
+                                """Get current timestamp using pendulum."""
+                                return pendulum.now('UTC')
+
+                    - create_file:
+                        path: "logging_setup.py"
+                        content: |
+                            from loguru import logger
+                            import sys
+
+                            # Configure loguru
+                            logger.remove()  # Remove default handler
+                            logger.add(
+                                sys.stdout,
+                                format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>"
+                            )
+                            logger.add(
+                                "logs/code_analyzer.log",
+                                rotation="500 MB",
+                                retention="10 days"
+                            )
+
+        3_model_base:
+            description: "Setup model base with proper imports"
+            changes:
+                - type: "modify_system"
+                  target: "code_analyzer/models"
+                  actions:
+                    - modify_file:
+                        path: "base.py"
+                        content: |
+                            from sqlalchemy.ext.declarative import declarative_base
+                            from sqlalchemy import text
+                            from loguru import logger
+                            from code_analyzer.core.database import engine, get_session
+
+                            Base = declarative_base()
+
+                            def init_db():
+                                """Initialize database."""
+                                try:
+                                    # Use proper text() for raw SQL
+                                    with engine.connect() as conn:
+                                        conn.execute(text("SELECT 1"))
+                                    Base.metadata.create_all(bind=engine)
+                                    logger.success("Database initialized successfully")
+                                except Exception as e:
+                                    logger.error(f"Database initialization failed: {e}")
+                                    raise
+
+    validation:
+        required_files:
+            - "code_analyzer/core/database.py"
+            - "code_analyzer/core/logging_setup.py"
+            - "code_analyzer/models/base.py"
+        
+        required_packages:
+            - "sqlalchemy"
+            - "pendulum"
+            - "loguru"
+            - "pandas"
+            - "pydantic"
+
+    monitoring:
+        track:
+            - "database_health"
+            - "logging_status"
+            - "dependency_versions" 

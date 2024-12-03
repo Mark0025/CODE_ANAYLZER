@@ -1,0 +1,62 @@
+update_plan:
+  name: "Manual Verify Workflow Build"
+  description: "Create and verify workflow module step by step"
+  priority: "HIGH"
+  
+  phases:
+    1_manual_create:
+      description: "Create structure manually first"
+      changes:
+        - type: "shell_command"
+          command: "mkdir -p code_analyzer/crews/workflow_crews"
+    
+    2_verify_directory:
+      description: "Verify directory creation"
+      changes:
+        - type: "shell_command"
+          command: "ls -la code_analyzer/crews/workflow_crews"
+    
+    3_add_files:
+      description: "Add module files"
+      changes:
+        - type: "add_module"
+          target: "code_analyzer/crews/workflow_crews/__init__.py"
+          content: |
+            """Workflow crews for orchestrating operations"""
+            from .run_workflow import run_workflow
+            __all__ = ['run_workflow']
+        
+        - type: "add_module"
+          target: "code_analyzer/crews/workflow_crews/run_workflow.py"
+          content: |
+            """Run workflow operations"""
+            import click
+            from pathlib import Path
+            from loguru import logger
+            from ..base_crew import BaseCrew
+            from ..doc_crews.doc_updater_crew import DocUpdaterCrew
+            
+            @click.command()
+            @click.option("--spec", required=True, help="Path to workflow spec")
+            @click.option("--verbose", is_flag=True, help="Enable verbose output")
+            @click.option("--target", default="./", help="Target directory")
+            def run_workflow(spec: str, verbose: bool, target: str):
+                """Run complete documentation workflow."""
+                try:
+                    doc_crew = DocUpdaterCrew(target)
+                    results = doc_crew.update_docs({"spec": spec})
+                    if verbose:
+                        logger.info(f"Workflow results: {results}")
+                    return results
+                except Exception as e:
+                    logger.error(f"Workflow failed: {e}")
+                    raise
+            
+            if __name__ == "__main__":
+                run_workflow()
+    
+    4_verify_files:
+      description: "Verify file creation"
+      changes:
+        - type: "shell_command"
+          command: "ls -la code_analyzer/crews/workflow_crews/"

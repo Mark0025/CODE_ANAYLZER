@@ -1,0 +1,69 @@
+update_plan:
+    name: "Core Base Setup"
+    version: "1.0.0"
+    priority: "CRITICAL"
+    description: "Restore working core functionality"
+
+    phases:
+        1_core_setup:
+            description: "Setup core files"
+            changes:
+                - type: "modify_system"
+                  target: "code_analyzer/models"
+                  actions:
+                    - modify_file:
+                        path: "log_entry.py"
+                        content: |
+                            from sqlalchemy import Column, Integer, String, DateTime, JSON, func
+                            from datetime import datetime
+                            from code_analyzer.models.base import Base
+
+                            class LogEntry(Base):
+                                __tablename__ = 'log_entries'
+                                
+                                id = Column(Integer, primary_key=True)
+                                timestamp = Column(DateTime, default=func.now())
+                                level = Column(String)
+                                message = Column(String)
+                                crew_name = Column(String)
+                                metadata = Column(JSON)
+
+                                @property
+                                def get_metadata(self):
+                                    """Get log metadata."""
+                                    return {
+                                        'id': self.id,
+                                        'timestamp': self.timestamp.isoformat() if self.timestamp else None,
+                                        'level': self.level,
+                                        'message': self.message,
+                                        'crew_name': self.crew_name,
+                                        'metadata': self.metadata or {}
+                                    }
+
+                    - modify_file:
+                        path: "base.py"
+                        content: |
+                            from sqlalchemy.ext.declarative import declarative_base
+                            from sqlalchemy import create_engine
+                            from sqlalchemy.orm import sessionmaker
+
+                            DATABASE_URL = 'sqlite:///code_analyzer.db'
+                            engine = create_engine(DATABASE_URL)
+                            SessionLocal = sessionmaker(bind=engine)
+                            Base = declarative_base()
+
+                            def get_session():
+                                return SessionLocal()
+
+                            def init_db():
+                                Base.metadata.create_all(bind=engine)
+
+    validation:
+        required_files:
+            - "code_analyzer/models/log_entry.py"
+            - "code_analyzer/models/base.py"
+
+    monitoring:
+        track:
+            - "model_updates"
+            - "database_status" 

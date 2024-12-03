@@ -1,0 +1,51 @@
+# Update Rules for DevUpdaterCrew vs Cursor/Composer
+
+use_dev_updater_crew:
+  - type: "systematic_updates"
+    conditions:
+      - "Multiple files need same pattern update"
+      - "Changes follow clear pattern"
+      - "Updates require consistency checks"
+    example_cases:
+      - "Updating all crews to use new BaseCrew"
+      - "Adding new logging pattern across crews"
+      - "Implementing new error handling pattern"
+
+use_cursor_composer:
+  - type: "focused_updates"
+    conditions:
+      - "Single file changes"
+      - "Complex logic updates"
+      - "New feature implementation"
+    example_cases:
+      - "Creating new crew class"
+      - "Updating specific business logic"
+      - "Adding new functionality"
+
+decision_flow:
+  1. Analyze Change Type:
+     - Is it a pattern-based update?
+     - How many files affected?
+     - Is consistency critical?
+  
+  2. Consider Complexity:
+     - Are changes mechanical?
+     - Do updates need coordination?
+     - Is validation required?
+  
+  3. Choose Tool:
+     - DevUpdaterCrew: For systematic, pattern-based changes
+     - Cursor/Composer: For focused, logic-heavy changes, design of crews and crew instructions in yaml
+
+example_update_spec:
+  type: "base_crew_update"
+  pattern:
+    - target: "all_crews"
+    - changes:
+        - add_resource_management: true
+        - update_base_class: true
+        - add_async_context: true
+  validation:
+    - check_imports
+    - verify_resource_cleanup
+    - test_async_behavior 

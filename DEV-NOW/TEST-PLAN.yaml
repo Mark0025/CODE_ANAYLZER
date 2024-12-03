@@ -1,0 +1,48 @@
+test_plan:
+  phases:
+    1_unit_tests:
+      - test_base_crew:
+          file: "tests/test_base_crew.py"
+          checks:
+            - "Resource management"
+            - "Timestamp generation"
+            - "Error handling"
+      
+      - test_individual_crews:
+          files:
+            - "tests/test_code_analysis_crew.py"
+            - "tests/test_error_handler_crew.py"
+            - "tests/test_status_crew.py"
+          checks:
+            - "Proper BaseCrew usage"
+            - "Resource cleanup"
+            - "Error handling"
+    
+    2_integration_tests:
+      - test_crew_interactions:
+          file: "tests/test_crew_interactions.py"
+          checks:
+            - "Resource sharing"
+            - "Error propagation"
+            - "State management"
+      
+      - test_resource_limits:
+          file: "tests/test_resource_limits.py"
+          checks:
+            - "CPU usage"
+            - "Memory usage"
+            - "File handles"
+    
+    3_system_tests:
+      - test_full_workflow:
+          file: "tests/test_workflow.py"
+          checks:
+            - "End-to-end operation"
+            - "Resource cleanup"
+            - "Error recovery"
+
+  success_criteria:
+    - "All tests pass"
+    - "No resource leaks"
+    - "CPU usage under 80%"
+    - "No uncaught exceptions" 

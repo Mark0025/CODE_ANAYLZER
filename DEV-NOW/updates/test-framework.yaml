@@ -1,0 +1,70 @@
+update_plan:
+  name: "Test Framework Implementation"
+  description: "Create comprehensive test suite for workflow integration"
+  priority: "HIGH"
+  
+  phases:
+    1_test_base:
+      description: "Create base test utilities and fixtures"
+      changes:
+        - type: "add_module"
+          target: "tests/workflow_tests/conftest.py"
+          description: "Test configuration with pytest fixtures"
+          content: |
+            """Test configuration and fixtures"""
+            import pytest
+            import asyncio
+            from pathlib import Path
+            from code_analyzer.crews.workflow_crews.workflow_manager import WorkflowManager
+            from code_analyzer.crews.workflow_crews.yaml_generator import YAMLSpecGenerator
+            
+            @pytest.fixture
+            async def workflow_manager():
+                """Provide test workflow manager"""
+                manager = WorkflowManager("./test_data")
+                yield manager
+            
+            @pytest.fixture
+            async def yaml_generator():
+                """Provide test YAML generator"""
+                generator = YAMLSpecGenerator("./test_data")
+                yield generator
+            
+            @pytest.fixture
+            def test_data_path():
+                """Provide test data directory"""
+                path = Path("tests/test_data")
+                path.mkdir(parents=True, exist_ok=True)
+                return path
+
+    2_integration_tests:
+      description: "Create integration test suite"
+      changes:
+        - type: "add_module"
+          target: "tests/workflow_tests/test_integration.py"
+          description: "Integration tests for workflow system"
+          content: |
+            """Integration tests for workflow system"""
+            import pytest
+            from pathlib import Path
+            
+            @pytest.mark.asyncio
+            async def test_full_workflow(workflow_manager, test_data_path):
+                """Test complete workflow process"""
+                # Create test file
+                test_file = test_data_path / "test_class.py"
+                test_file.write_text('''
+                class TooLargeClass:
+                    """A test class that's too big"""
+                    def method1(self): pass
+                    def method2(self): pass
+                    # ... many methods
+                ''')
+                
+                # Run workflow
+                results = await workflow_manager.run_workflow()
+                
+                # Verify results
+                assert results["status"] == "completed"
+                assert len(results["updates"]) > 0
+                assert len(results["docs"]) > 0 

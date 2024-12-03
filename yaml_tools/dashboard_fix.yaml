@@ -1,0 +1,38 @@
+update_plan:
+  name: "Fix Dashboard Column Names"
+  description: "Update monitoring dashboard to match database schema"
+  priority: "HIGH"
+  
+  phases:
+    1_analyze:
+      description: "Verify database schema"
+      command: |
+        sqlite3 code_analyzer/core/output/db/analyzer.db ".schema log_entries"
+      expected_output: |
+        Contains log_metadata column
+        
+    2_update_dashboard:
+      description: "Update dashboard query"
+      files:
+        - path: "code_analyzer/monitoring/dashboard.py"
+          changes:
+            - type: "replace"
+              from: "log_data"
+              to: "log_metadata"
+              
+    3_verify:
+      description: "Test dashboard"
+      steps:
+        - command: "uvicorn code_analyzer.monitoring.dashboard:app --reload"
+        - command: "curl http://localhost:8000"
+          expected: "200 OK"
+
+  validation:
+    - check_schema:
+        command: "sqlite3 code_analyzer/core/output/db/analyzer.db '.schema log_entries'"
+    - verify_dashboard:
+        url: "http://localhost:8000"
+        expect: "200 OK"
+
+  rollback:
+    command: "git checkout -- code_analyzer/monitoring/dashboard.py" 

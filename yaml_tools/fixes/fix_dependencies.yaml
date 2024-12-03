@@ -1,0 +1,11 @@
+update_plan:
+  name: "Fix Dependencies"
+  description: "Install required packages"
+  priority: "HIGH"
+  
+  phases:
+    1_install_deps:
+      description: "Install required packages"
+      changes:
+        - type: "run_command"
+          command: "pip install flask fastapi uvicorn sqlalchemy loguru pytest httpx jinja2"

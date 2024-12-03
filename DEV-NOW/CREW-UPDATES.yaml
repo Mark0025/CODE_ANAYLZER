@@ -1,0 +1,95 @@
+# Current Update Plan for Codebase Fixes
+
+update_plan:
+  name: "BaseCrew Integration Update"
+  description: "Fix resource management and async handling across all crews"
+  priority: "HIGH"
+  
+  affected_files:
+    crews:
+      - "code_analyzer/crews/base_crew.py"
+      - "code_analyzer/crews/code_analysis_crew.py"
+      - "code_analyzer/crews/error_handler_crew.py"
+      - "code_analyzer/crews/status_crew.py"
+      - "code_analyzer/crews/clean_dir_crew.py"
+      - "code_analyzer/crews/analyze_crews_crew.py"
+      - "code_analyzer/crews/crewai_docs_crew.py"
+      - "code_analyzer/crews/agent_factory.py"
+      - "code_analyzer/crews/cli.py"
+    
+    tests:
+      - "tests/conftest.py"
+      - "tests/test_crews.py"
+      - "tests/test_error_handler_crew.py"
+      - "tests/test_real_analysis.py"
+
+  required_changes:
+    base_crew:
+      - add_resource_monitor:
+          type: "add_property"
+          code: |
+            @property
+            def resource_monitor(self):
+                if not hasattr(self, '_resource_monitor'):
+                    self._resource_monitor = ResourceMonitor()
+                return self._resource_monitor
+      
+      - add_timestamp:
+          type: "add_method"
+          code: |
+            def get_timestamp(self) -> str:
+                return pendulum.now('UTC').isoformat()
+
+    all_crews:
+      - use_managed_operation:
+          type: "wrap_methods"
+          pattern: |
+            async with self.managed_operation():
+                try:
+                    # Original method content
+                except Exception as e:
+                    self.logger.error(f"{method_name} failed: {e}")
+                    return {
+                        "status": "failed",
+                        "error": str(e),
+                        "timestamp": self.get_timestamp()
+                    }
+
+      - add_resource_tracking:
+          type: "add_context"
+          code: |
+            async with self.managed_resource('file', file_obj):
+                # File operations
+
+    tests:
+      - update_fixtures:
+          type: "modify"
+          file: "tests/conftest.py"
+          changes:
+            - add_resource_monitor_fixture
+            - update_async_config
+            - add_cleanup_fixtures
+
+  validation_steps:
+    - verify_imports:
+        check: "All crews import BaseCrew"
+    - verify_resource_management:
+        check: "All crews use managed_operation"
+    - verify_timestamps:
+        check: "All responses include timestamps"
+    - verify_error_handling:
+        check: "All methods handle exceptions properly"
+
+  rollback_plan:
+    - backup_files:
+        path: "backups/crews_{timestamp}"
+    - store_changes:
+        file: "update_log.json"
+    - restore_command:
+        script: "restore_backup.py"
+
+  success_metrics:
+    - "All tests passing"
+    - "No resource leaks"
+    - "CPU usage under threshold"
+    - "Proper error handling" 

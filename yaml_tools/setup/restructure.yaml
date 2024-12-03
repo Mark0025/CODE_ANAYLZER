@@ -1,0 +1,124 @@
+name: "Complete System Restructure and Verification"
+description: "Full system fix including permissions, structure, and tests"
+priority: "CRITICAL"
+
+phases:
+  1_backup:
+    description: "Create timestamped backup"
+    changes:
+      - type: "create_directory"
+        target: "backups/$(date +%Y%m%d_%H%M%S)"
+        permissions: "0755"
+      
+      - type: "backup_data"
+        source: ["code_analyzer/", "crews/", "tests/"]
+        target: "backups/$(date +%Y%m%d_%H%M%S)"
+        verify: true
+
+  2_fix_permissions:
+    description: "Ensure correct permissions"
+    changes:
+      - type: "set_permissions"
+        target: "code_analyzer"
+        permissions: "0755"
+        recursive: true
+      
+      - type: "set_owner"
+        target: "code_analyzer"
+        user: "${USER}"
+        recursive: true
+
+  3_consolidate_structure:
+    description: "Fix directory structure"
+    changes:
+      - type: "ensure_directory"
+        target: "code_analyzer/crews"
+        permissions: "0755"
+      
+      - type: "move_directory"
+        source: "crews/*"
+        target: "code_analyzer/crews/"
+        backup: true
+        verify: true
+      
+      - type: "merge_data"
+        source: "crews/crew-output"
+        target: "code_analyzer/crews/crew-output"
+        strategy: "preserve_newer"
+        verify: true
+
+  4_fix_imports:
+    description: "Update all imports"
+    changes:
+      - type: "update_imports"
+        files: ["**/*.py"]
+        patterns:
+          - from: "from crews."
+            to: "from code_analyzer.crews."
+          - from: "from ..base_crew"
+            to: "from code_analyzer.crews.base_crew"
+          - from: "import crews."
+            to: "import code_analyzer.crews."
+        verify: true
+
+  5_fix_methods:
+    description: "Add missing methods"
+    changes:
+      - type: "add_method"
+        target: "code_analyzer/crews/analysis_crews/complexity_analyzer.py"
+        methods:
+          - name: "_calculate_maintainability"
+            content: |
+              async def _calculate_maintainability(self, node: ast.AST) -> float:
+                  """Calculate maintainability index."""
+                  return 100.0  # Placeholder for actual implementation
+          
+          - name: "_calculate_halstead"
+            content: |
+              async def _calculate_halstead(self, node: ast.AST) -> dict:
+                  """Calculate Halstead metrics."""
+                  return {"volume": 0, "difficulty": 0}  # Placeholder
+
+  6_cleanup:
+    description: "Remove old directories"
+    changes:
+      - type: "remove_directory"
+        target: "crews"
+        verify_empty: true
+
+  7_verify:
+    description: "Run all verifications"
+    changes:
+      - type: "run_tests"
+        command: "pytest tests/ -v --cov=code_analyzer"
+        success_criteria:
+          min_coverage: 80
+          max_failures: 0
+      
+      - type: "verify_imports"
+        tests:
+          - "from code_analyzer.crews.base_crew import BaseCrew"
+          - "from code_analyzer.core.analyzer import analyze_directory"
+      
+      - type: "verify_structure"
+        required_paths:
+          - "code_analyzer/crews/crew-output"
+          - "code_analyzer/crews/analysis_crews"
+          - "code_analyzer/crews/dev_crews"
+
+  8_documentation:
+    description: "Update documentation"
+    changes:
+      - type: "update_docs"
+        target: "DEV-NOW/current-state/currentstate.md"
+        content_template: |
+          # System Status After Restructure
+          
+          ## Directory Structure:
+          {{ list_directories("code_analyzer/") }}
+          
+          ## Test Results:
+          {{ test_results }}
+          
+          ## Next Steps:
+          {{ generate_next_steps() }}

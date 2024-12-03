@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CODE_ANALYZER Monitoring Guide</title>
+    <style>
+        /* ... existing styles ... */
+    </style>
+</head>
+<body>
+    <h1>Real-Time Monitoring System</h1>
+
+    <div class="section">
+        <h2>1. Dashboard Components</h2>
+        
+        <h3>1.1 Main Dashboard (dashboard.html)</h3>
+        <pre>
+<!-- Main dashboard layout -->
+&lt;div class="container mt-4"&gt;
+    &lt;h1&gt;System Logs&lt;/h1&gt;
+    
+    <!-- Log Table -->
+    &lt;div class="table-responsive"&gt;
+        &lt;table class="table"&gt;
+            &lt;thead&gt;
+                &lt;tr&gt;
+                    &lt;th&gt;Time&lt;/th&gt;
+                    &lt;th&gt;Level&lt;/th&gt;
+                    &lt;th&gt;Message&lt;/th&gt;
+                    &lt;th&gt;Crew&lt;/th&gt;
+                &lt;/tr&gt;
+            &lt;/thead&gt;
+            &lt;tbody&gt;
+                {% for log in logs %}
+                    &lt;tr&gt;...&lt;/tr&gt;
+                {% endfor %}
+            &lt;/tbody&gt;
+        &lt;/table&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</pre>
+
+        <h3>1.2 WebSocket Updates</h3>
+        <pre>
+// WebSocket connection for real-time updates
+const ws = new WebSocket("ws://" + window.location.host + "/ws");
+ws.onmessage = (event) => {
+    const log = JSON.parse(event.data);
+    // Update table with new log entry
+};</pre>
+    </div>
+
+    <div class="section">
+        <h2>2. Available Endpoints</h2>
+        <ul>
+            <li><code>GET /</code> - Main dashboard</li>
+            <li><code>GET /api/db-status</code> - Database status</li>
+            <li><code>GET /codebase-overview</code> - System overview</li>
+            <li><code>WebSocket /ws</code> - Real-time updates</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>3. Data Flow</h2>
+        <pre>
+[AI Crews] → [Database] → [FastAPI Server] → [WebSocket] → [Browser]
+   ↑                                             ↓
+   └─────────────── Real-time Updates ──────────┘</pre>
+    </div>
+</body>
+</html> 

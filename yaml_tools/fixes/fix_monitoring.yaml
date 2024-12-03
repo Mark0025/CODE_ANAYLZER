@@ -1,0 +1,23 @@
+update_plan:
+  name: "Fix Monitoring Database"
+  description: "Update LogEntry model and database schema"
+  priority: "HIGH"
+  
+  phases:
+    1_update_model:
+      - modify_file:
+          path: "code_analyzer/models/log_entry.py"
+          changes:
+            - rename_column:
+                from: "log_data"
+                to: "metadata"  # Using standard SQLAlchemy name
+                
+    2_migrate_db:
+      - run_command: "python -m code_analyzer.cli.commands.db reset"
+      
+    3_verify:
+      - test_dashboard:
+          url: "http://localhost:8000"
+          checks:
+            - "Database connection"
+            - "Log entries display" 

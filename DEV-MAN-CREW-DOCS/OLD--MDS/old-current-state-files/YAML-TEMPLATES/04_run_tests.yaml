@@ -1,0 +1,86 @@
+# Test Suite Implementation YAML
+update_plan:
+  name: "Test Suite Implementation"
+  description: "Create and run comprehensive test suite"
+  priority: "HIGH"
+  
+  phases:
+    1_create_fixtures:
+      description: "Create test fixtures"
+      changes:
+        - type: "create_module"
+          target: "tests/conftest.py"
+          content: |
+            """Test fixtures for CODE_ANALYZER."""
+            import pytest
+            from pathlib import Path
+            from sqlalchemy import create_engine
+            from sqlalchemy.orm import sessionmaker
+            from code_analyzer.models.base import Base
+            from code_analyzer.models.fabric_models import FabricResponse
+            from code_analyzer.integrations.fabric.client import FabricClient
+            
+            @pytest.fixture
+            async def db_session():
+                """Provide test database session."""
+                engine = create_engine('sqlite:///test.db')
+                Session = sessionmaker(bind=engine)
+                session = Session()
+                Base.metadata.create_all(engine)
+                yield session
+                session.close()
+                Base.metadata.drop_all(engine)
+            
+            @pytest.fixture
+            async def fabric_client():
+                """Provide test Fabric client."""
+                client = FabricClient()
+                client.base_url = "http://test.fabric.ai"
+                client.api_key = "test-key"
+                return client
+    
+    2_create_unit_tests:
+      description: "Create unit tests"
+      changes:
+        - type: "create_module"
+          target: "tests/unit/test_fabric_client.py"
+          content: |
+            """Test Fabric client functionality."""
+            import pytest
+            from code_analyzer.integrations.fabric.client import FabricClient
+            
+            @pytest.mark.asyncio
+            async def test_fabric_client(fabric_client, db_session):
+                """Test Fabric client operations."""
+                response = await fabric_client.send_to_pattern(
+                    "test_pattern",
+                    {"test": "data"}
+                )
+                assert response is not None
+                
+                # Verify database entry
+                fabric_response = db_session.query(FabricResponse).first()
+                assert fabric_response is not None
+                assert fabric_response.pattern == "test_pattern"
+    
+    3_create_integration_tests:
+      description: "Create integration tests"
+      changes:
+        - type: "create_module"
+          target: "tests/integration/test_full_pipeline.py"
+          content: |
+            """Test full analysis pipeline."""
+            import pytest
+            from pathlib import Path
+            from code_analyzer.core.analyzer import analyze_code
+            
+            @pytest.mark.asyncio
+            async def test_full_pipeline(db_session):
+                """Test complete analysis pipeline."""
+                test_file = Path("tests/data/test_code.py")
+                test_file.parent.mkdir(parents=True, exist_ok=True)
+                test_file.write_text("def test(): pass")
+                
+                results = await analyze_code(test_file)
+                assert results["status"] == "completed"
+                assert "analysis" in results 

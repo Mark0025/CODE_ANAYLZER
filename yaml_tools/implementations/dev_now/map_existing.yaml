@@ -1,0 +1,100 @@
+update_plan:
+    name: "Map Existing CODE_ANALYZER Components"
+    version: "1.0.0"
+    priority: "CRITICAL"
+    description: "Create index of existing components and documentation"
+
+    phases:
+        - name: "Map Documentation"
+          steps:
+            - name: "Extract Implementation Plan"
+              command: "python -m code_analyzer.scripts.analyze_history"
+              args:
+                file: "DEV-MAN-CREW-DOCS/DEV-NOW-IMPLEMENTATION-PLAN.html"
+                output: "implementation_map.json"
+
+            - name: "Extract Guide"
+              command: "python -m code_analyzer.scripts.analyze_history"
+              args:
+                file: "DEV-MAN-CREW-DOCS/CODE_ANALYZER_GUIDE.html"
+                output: "guide_map.json"
+
+        - name: "Map YAML Tools"
+          steps:
+            - name: "Analyze Command History"
+              command: "python -m code_analyzer.scripts.analyze_history"
+              args:
+                file: "yaml_tools/store/command_history.db"
+                output: "command_map.json"
+
+            - name: "Map Implementations"
+              command: "python -m code_analyzer.scripts.analyze_history"
+              args:
+                path: "yaml_tools/implementations/dev_now/*.yaml"
+                output: "implementations_map.json"
+
+        - name: "Generate Index"
+          steps:
+            - name: "Create Visual Map"
+              template:
+                file: "code_analyzer/monitoring/templates/dev_now.html"
+                section: "existing_components"
+                content: |
+                    <div class="existing-map">
+                        <div class="section docs">
+                            <h3>Documentation</h3>
+                            <div class="items">
+                                {% for doc in docs %}
+                                <div class="item">
+                                    <span class="name">{{ doc.name }}</span>
+                                    <span class="type">{{ doc.type }}</span>
+                                    <span class="last-updated">{{ doc.updated }}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="section yamls">
+                            <h3>YAML Tools</h3>
+                            <div class="items">
+                                {% for yaml in yamls %}
+                                <div class="item">
+                                    <span class="name">{{ yaml.name }}</span>
+                                    <span class="success">{{ yaml.success_rate }}%</span>
+                                    <button onclick="useYaml('{{ yaml.path }}')">Use</button>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="section commands">
+                            <h3>Command History</h3>
+                            <div class="items">
+                                {% for cmd in commands %}
+                                <div class="item">
+                                    <span class="command">{{ cmd.command }}</span>
+                                    <span class="success">{{ cmd.success }}</span>
+                                    <span class="count">Used: {{ cmd.count }}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+    validation:
+        required_files:
+            - "DEV-MAN-CREW-DOCS/DEV-NOW-IMPLEMENTATION-PLAN.html"
+            - "DEV-MAN-CREW-DOCS/CODE_ANALYZER_GUIDE.html"
+            - "yaml_tools/store/command_history.db"
+
+        required_data:
+            - "implementation_map.json"
+            - "guide_map.json"
+            - "command_map.json"
+            - "implementations_map.json"
+
+    monitoring:
+        track:
+            - "documentation_updates"
+            - "yaml_usage"
+            - "command_history" 

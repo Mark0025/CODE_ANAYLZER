@@ -1,0 +1,150 @@
+update_plan:
+    name: "DEV-NOW Interface v1"
+    version: "1.0.0"
+    priority: "CRITICAL"
+    description: "User interaction interface for DEV-NOW"
+
+    phases:
+        - name: "Quick Functions Panel"
+          steps:
+            - name: "Add Quick Functions"
+              template:
+                file: "code_analyzer/monitoring/templates/dev_now.html"
+                section: "quick_functions"
+                content: |
+                    <div class="quick-functions">
+                        <div class="pills">
+                            <button class="pill success" data-action="analyze">🔍 Analyze Code</button>
+                            <button class="pill info" data-action="files">📁 Show Files</button>
+                            <button class="pill warning" data-action="history">📜 Show History</button>
+                            <button class="pill danger" data-action="rollback">⏪ Rollback</button>
+                        </div>
+                        <div class="session-info">
+                            <span class="badge">Session: {{ session_id }}</span>
+                            <span class="badge">Active Crews: {{ active_crews }}</span>
+                        </div>
+                    </div>
+
+        - name: "File Explorer"
+          steps:
+            - name: "Add File View"
+              template:
+                file: "code_analyzer/monitoring/templates/dev_now.html"
+                section: "file_explorer"
+                content: |
+                    <div class="file-explorer">
+                        <div class="path-nav">{{ current_path }}</div>
+                        <div class="file-list">
+                            {% for file in files %}
+                            <div class="file-item">
+                                <i class="{{ file.icon }}"></i>
+                                {{ file.name }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+        - name: "Command History"
+          steps:
+            - name: "Add History View"
+              template:
+                file: "code_analyzer/monitoring/templates/dev_now.html"
+                section: "command_history"
+                content: |
+                    <div class="command-history">
+                        <h4>Recent Commands</h4>
+                        <div class="history-list">
+                            {% for cmd in recent_commands %}
+                            <div class="history-item">
+                                <span class="time">{{ cmd.time }}</span>
+                                <span class="command">{{ cmd.command }}</span>
+                                <span class="status {{ cmd.status }}">{{ cmd.status }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+        - name: "Successful YAMLs"
+          steps:
+            - name: "Add YAML Library"
+              template:
+                file: "code_analyzer/monitoring/templates/dev_now.html"
+                section: "yaml_library"
+                content: |
+                    <div class="yaml-library">
+                        <h4>Successful YAML Patterns</h4>
+                        <div class="yaml-list">
+                            {% for yaml in successful_yamls %}
+                            <div class="yaml-item">
+                                <span class="name">{{ yaml.name }}</span>
+                                <span class="success-rate">{{ yaml.success_rate }}%</span>
+                                <button class="use-yaml" data-yaml="{{ yaml.path }}">Use</button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+    styles:
+        file: "code_analyzer/monitoring/static/css/interface.css"
+        content: |
+            .quick-functions {
+                padding: 15px;
+                background: #f8f9fa;
+                border-radius: 8px;
+                margin-bottom: 20px;
+            }
+
+            .pills {
+                display: flex;
+                gap: 10px;
+            }
+
+            .pill {
+                padding: 8px 16px;
+                border-radius: 20px;
+                border: none;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+
+            .session-info {
+                margin-top: 10px;
+            }
+
+            .file-explorer {
+                height: 400px;
+                overflow: auto;
+                border: 1px solid #dee2e6;
+                border-radius: 4px;
+            }
+
+            .command-history {
+                max-height: 300px;
+                overflow: auto;
+            }
+
+            .yaml-library {
+                background: #fff;
+                padding: 15px;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+
+    validation:
+        required_files:
+            - "code_analyzer/monitoring/templates/dev_now.html"
+            - "code_analyzer/monitoring/static/css/interface.css"
+            - "code_analyzer/monitoring/static/js/interface.js"
+
+        required_endpoints:
+            - "/api/files"
+            - "/api/history"
+            - "/api/yamls"
+            - "/api/session"
+
+    monitoring:
+        track:
+            - "user_commands"
+            - "yaml_usage"
+            - "file_access"
+            - "session_duration" 
