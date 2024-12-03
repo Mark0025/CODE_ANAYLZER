@@ -1,47 +1,45 @@
 # Python
 __pycache__/
 *.py[cod]
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-*.egg-info/
+*.class
 
-# Virtual Environment
+# Virtual environments
+.env
 .venv/
 venv/
 
-# Environment files
-.env
-.env.*
-!.env.example.template
-
-# IDE
-.vscode/
+# IDEs and editors
 .idea/
+.vscode/
 
-# Testing
+# Build files
+build/
+dist/
+*.egg-info/
+
+# Logs
+*.log
+migration_state.json
+
+# Coverage
 .coverage
-.pytest_cache/
+coverage.xml
 htmlcov/
 
-# Logs and outputs
-*.log
+# Backups
+backups/
+backup-*/
+.backup-litellm/
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Test-related artifacts
+tests/Logs/
+*.pytest_cache/
+
+# Project specific
 crews/crew-output/
 
-# OS
-.DS_Store
-*.swp
-
-# Strict environment file rules
-.env
-.env.*
-!.env.example.template
-
-# Never commit these
-*.key
-*.pem
-*secret*
-*token*
-
+ 
