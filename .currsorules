@@ -154,6 +154,13 @@ problem_solving_strategy:
           - "Search for hardcoded values before adding complexity"
           - "Fix at source rather than adding layers"
           - "Use grep/search before creating new systems"
+    - verify_tech_stack:
+        description: "Check if issue is tech stack related"
+        questions:
+          - "Is this a UV installation issue?"
+          - "Is this a FastAPI configuration problem?"
+          - "Is this a database connection issue?"
+          - "Is this an AI integration problem?"
 
 # AI First Strategy
 ai_first_strategy:
@@ -571,5 +578,70 @@ successful_patterns:
 2. Use proven SQLAlchemy patterns
 3. Avoid complex dependencies
 4. Test before changing
+
+# Tech Stack Configuration
+tech_stack:
+  package_manager:
+    primary: "uv"
+    fallback: "pip"
+    reasons:
+      - "10x faster installation"
+      - "Better dependency resolution"
+      - "Automatic lockfile generation"
+      - "Enhanced security"
+  
+  framework:
+    web: "FastAPI"
+    templating: "Jinja2"
+    websocket: "WebSocket"
+    
+  database:
+    orm: "SQLAlchemy"
+    development: "SQLite"
+    production: "PostgreSQL"
+    
+  ai_integration:
+    framework: "CrewAI"
+    api: "OpenAI"
+    
+  development:
+    testing: "pytest"
+    formatting: ["black", "isort"]
+    typing: "mypy"
+    documentation: "MkDocs"
+
+# Development Standards
+development_standards:
+  package_management:
+    - "Always use UV for installations"
+    - "Maintain requirements.txt"
+    - "Generate lockfile with UV"
+    - "Document all dependencies"
+
+  code_quality:
+    - "Run black before commits"
+    - "Verify mypy type checking"
+    - "Maintain test coverage"
+    - "Update documentation"
+
+# Installation Verification
+installation_checks:
+  - verify_uv:
+      command: "uv --version"
+      error: "UV not installed properly"
+  
+  - verify_environment:
+      command: "which python"
+      check: "points to .venv/bin/python"
+  
+  - verify_dependencies:
+      command: "uv pip freeze"
+      required:
+        - "sqlalchemy"
+        - "fastapi"
+        - "uvicorn"
+        - "jinja2"
+        - "pydantic"
+        - "python-dotenv"
 
 [End of .currsorules]
