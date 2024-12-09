@@ -20,7 +20,7 @@ CODE_ANALYZER is an AI-powered code analysis tool
 
 ## Installation
 ```bash
-pip install code-analyzer
+pip install code-analyzer -- COMING SOON 
 ```
 
 ## Quick Start
